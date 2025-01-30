@@ -5,8 +5,9 @@ from kkloader import KoikatuCharaData
 from functools import reduce
 import _globals as _g
 
-child = chara.Child(".pure.png", output_name="uhhhhh" )
+child = chara.Child(mother=".Nakano-Yotsuba.png", output_name="new_Yotsuba" )
 child.inherit_face()
+child.inherit_body()
 child.save()
 
 # print(child.mother.list_faceslider)
