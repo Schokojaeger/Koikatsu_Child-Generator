@@ -131,5 +131,5 @@ class Mother():
                                self.breast_softness, self.breast_weight]
 
     def save(self, name):
-        # Beim Aufrufen dieser Methode wurden zuvor nie die eigentlichen Werte der Originalkarte verändert, weil sie oben nur einer neuen Variable zugewiesen werden
+        """ call .save method of KoikatuCharaData with chosen output name """
         self.mother.save(f"./{name}.png")

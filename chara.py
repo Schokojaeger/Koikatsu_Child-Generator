@@ -5,20 +5,24 @@ import random
 from kkloader import KoikatuCharaData
 import _globals as _g
 from mother import Mother
+from father import Father
 
 
 class Child:
 
-    def __init__(self, mother, output_name):
-        if not isinstance(mother, str): #and isinstance(father, str):
-            raise TypeError("Both 'Mother' and 'Father' Files must be the filepath to the corresponding .png file in String Format")
+    def __init__(self, mother, father, output_name):
+        if not isinstance(mother, str) and isinstance(father, str):
+            raise TypeError("Both 'Mother' and 'Father' Files must be the filename of the corresponding .png file in String Format")
 
         if not isinstance(output_name, str):
             raise TypeError("Parameter 'output_name' should be a string with the name the file should be called after creation")
 
-        self.motherc = Mother("./Nakano-Yotsuba.png")
-        self.mother = KoikatuCharaData.load("./Nakano-Yotsuba.png")
-        # self.father = KoikatuCharaData.load(father)
+        self.motherc = Mother(f"./{mother}.png")
+        self.mother = KoikatuCharaData.load(f"./{mother}.png")
+        self.fatherc = Father(f"./{father}.png")
+        self.father = KoikatuCharaData.load(f"./{father}.png")
+# TODO father class inserted. Figure out how to best combine parent's values (e.g combining bust size from mother (always more than 0), and bust size of
+# father (always 0) to get a middle value does not make sense. Same with butt size probably)
         self.child = KoikatuCharaData()
         self.child.image = self.mother.image
         self.child.face_image = self.mother.image
