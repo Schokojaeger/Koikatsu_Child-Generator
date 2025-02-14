@@ -21,8 +21,7 @@ class Child:
         self.mother = KoikatuCharaData.load(f"./{mother}.png")
         self.fatherc = Father(f"./{father}.png")
         self.father = KoikatuCharaData.load(f"./{father}.png")
-# TODO father class inserted. Figure out how to best combine parent's values (e.g combining bust size from mother (always more than 0), and bust size of
-# father (always 0) to get a middle value does not make sense. Same with butt size probably)
+
         self.child = KoikatuCharaData()
         self.child.image = self.mother.image
         self.child.face_image = self.mother.image
@@ -55,14 +54,17 @@ class Child:
         # loop through facesliders and modify all values to a random degree (currently 50% up or down from base)
         for i in _g.list_faceslider:
             currm = _g.getv(self.mother, i)
+            currf = _g.getv(self.father, i)
             if currm == 0.0:
                 continue
+            middle_value = (currm + currf) / 2
             # changing the randomization of head size
+            # we only use the mother's head size here to determine if the current item really is the head size
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][1]:
-                newitem = self.modify_value(currm, 0.2)
+                newitem = self.modify_value(middle_value, 0.2)
                 _g.setv(self.child, i, newitem)
             else:
-                newitem = self.modify_value(currm, 0.5)
+                newitem = self.modify_value(middle_value, 0.5)
                 # set resulting value as corresponding faceslider value of child
                 _g.setv(self.child, i, newitem)
 
@@ -73,23 +75,29 @@ class Child:
         # loop through bodysliders and modify all values to a random degree
         for i in _g.list_bodyslider:
             currm = _g.getv(self.mother, i)
+            currf = _g.getv(self.father, i)
             if currm == 0.0:
                 continue
             # changing the randomization of breast size
+            # Using the mother's breast size since using a middle value of both parents would likely
+            # always result in a small chest size (father will normally have a very small size)
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][4]:
+                # using a modifier of 50% to not always get basically the same size as the mother
                 newitem = self.modify_value(currm, 0.5)
                 print(newitem)
                 _g.setv(self.child, i, newitem)
                 continue
             # changing the randomization of butt angle (can get really fucked up)
+            # Using the mother's butt size since the father should normally have a small butt
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][27]:
                 newitem = self.modify_value(currm, 0.15)
                 _g.setv(self.child, i, newitem)
                 continue
-            else: 
-                newitem = self.modify_value(currm, 0.3)
-                # set resulting value as corresponding bodyslider value of child
-                _g.setv(self.child, i, newitem)
+
+            middle_value = (currm + currf) / 2
+            newitem = self.modify_value(middle_value, 0.3)
+            # set resulting value as corresponding bodyslider value of child
+            _g.setv(self.child, i, newitem)
 
     # ---------------------------------------------------------------------------------------------
     def save(self):
