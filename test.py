@@ -5,9 +5,10 @@ from kkloader import KoikatuCharaData
 from functools import reduce
 import _globals as _g
 
-child = chara.Child(mother="Nakano-Yotsuba", father="toshi", output_name="new_Yotsuba")
+child = chara.Child(mother="pure", father="toshi", output_name="new_child")
 child.inherit_face()
 child.inherit_body()
+child.inherit_hair()
 child.save()
 
 # print(child.mother.list_faceslider)

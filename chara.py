@@ -29,7 +29,7 @@ class Child:
         self.child.header = "【KoiKatuChara】".encode("utf-8")
         self.child.version = "0.0.0".encode("ascii")
         self.child.blockdata = copy.deepcopy(self.mother.blockdata)
-        if self.mother["KKEx"]:
+        if hasattr(self.mother, "KKEx"):
             self.child["KKEx"] = copy.deepcopy(self.mother["KKEx"])
         self.child["Custom"] = copy.deepcopy(self.mother["Custom"])
         self.child["Coordinate"] = copy.deepcopy(self.mother["Coordinate"])
@@ -98,6 +98,38 @@ class Child:
             newitem = self.modify_value(middle_value, 0.3)
             # set resulting value as corresponding bodyslider value of child
             _g.setv(self.child, i, newitem)
+    
+    # ---------------------------------------------------------------------------------------------
+    def inherit_hair(self):
+        """ use either mother's or father's haircolor (or in combination) to determine the child's hair color.
+            Will also choose random hair options from the vanilla selection """
+        color_m = self.mother["Custom"]["hair"]["parts"][0]["baseColor"]
+        color_f = self.father["Custom"]["hair"]["parts"][0]["baseColor"]
+        color_options = [color_m, color_f]
+
+        # Back Hair
+        self.child["Custom"]["hair"]["parts"][0]["baseColor"] = random.choice(color_options)
+        self.child["Custom"]["hair"]["parts"][0]["startColor"] = random.choice(color_options)
+        self.child["Custom"]["hair"]["parts"][0]["endColor"] = random.choice(color_options)
+        #insert accessory color here
+
+        # Front Hair
+        self.child["Custom"]["hair"]["parts"][1]["baseColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
+        self.child["Custom"]["hair"]["parts"][1]["startColor"] = self.child["Custom"]["hair"]["parts"][0]["startColor"]     # looks really fucking weird if back and front hair root don't match up
+        self.child["Custom"]["hair"]["parts"][1]["endColor"] = random.choice(color_options)
+        #insert accessory color here
+
+        # Side Hair
+        self.child["Custom"]["hair"]["parts"][2]["baseColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
+        self.child["Custom"]["hair"]["parts"][2]["startColor"] = random.choice(color_options)
+        self.child["Custom"]["hair"]["parts"][2]["endColor"] = random.choice(color_options)
+        #insert accessory color here
+
+        # Extension Color
+        self.child["Custom"]["hair"]["parts"][3]["baseColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
+        self.child["Custom"]["hair"]["parts"][3]["startColor"] = random.choice(color_options)
+        self.child["Custom"]["hair"]["parts"][3]["endColor"] = random.choice(color_options)
+        #insert accessory color here
 
     # ---------------------------------------------------------------------------------------------
     def save(self):
