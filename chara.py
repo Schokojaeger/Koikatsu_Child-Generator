@@ -84,7 +84,7 @@ class Child:
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][4]:
                 # using a modifier of 50% to not always get basically the same size as the mother
                 newitem = self.modify_value(currm, 0.5)
-                print(newitem)
+                print("Boobs", newitem)
                 _g.setv(self.child, i, newitem)
                 continue
             # changing the randomization of butt angle (can get really fucked up)
@@ -98,34 +98,46 @@ class Child:
             newitem = self.modify_value(middle_value, 0.3)
             # set resulting value as corresponding bodyslider value of child
             _g.setv(self.child, i, newitem)
-    
+
     # ---------------------------------------------------------------------------------------------
     def inherit_hair(self):
         """ use either mother's or father's haircolor (or in combination) to determine the child's hair color.
             Will also choose random hair options from the vanilla selection """
-        
+
+        # Vanilla Hairstyles for Back Hair
+        back_hair_options = list(range(0, 21)) + list(range(31, 71)) + list(range(200, 210))
+        # Set random Back Hair
+        self.child["Custom"]["hair"]["parts"][0]["id"] = random.choice(back_hair_options)
+        print("Back Hair ID: " , self.child["Custom"]["hair"]["parts"][0]["id"])
+
         # Vanilla Hairstyles for Front Hair
-        front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))       # For some reason, the vanilla hairstyles end at 70 and pick back up at 200?????
-        # Set random front hair
+        front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))       # For some reason, the vanilla hairstyles end at 20, pick back up at 70, stop again, and then start again at 200?????
+        # Set random Front Hair
         self.child["Custom"]["hair"]["parts"][1]["id"] = random.choice(front_hair_options)
-        print(self.child["Custom"]["hair"]["parts"][1]["id"])
+        print("Front Hair ID: ", self.child["Custom"]["hair"]["parts"][1]["id"])
 
         # Getting hair colors of parents
         color_m = self.mother["Custom"]["hair"]["parts"][0]["baseColor"]
         color_f = self.father["Custom"]["hair"]["parts"][0]["baseColor"]
         color_options = [color_m, color_f]
 
-        # Back Hair
+        # Back Hair Color
         self.child["Custom"]["hair"]["parts"][0]["baseColor"] = random.choice(color_options)
         self.child["Custom"]["hair"]["parts"][0]["startColor"] = random.choice(color_options)
         self.child["Custom"]["hair"]["parts"][0]["endColor"] = random.choice(color_options)
-        #insert accessory color here
+        if self.child["Custom"]["hair"]["parts"][0]["baseColor"] == color_m:
+            self.child["Custom"]["hair"]["parts"][0]["acsColor"][0] = color_f
+        else:
+            self.child["Custom"]["hair"]["parts"][0]["acsColor"][0] = color_m
 
         # Front Hair
         self.child["Custom"]["hair"]["parts"][1]["baseColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
         self.child["Custom"]["hair"]["parts"][1]["startColor"] = self.child["Custom"]["hair"]["parts"][0]["startColor"]     # looks really fucking weird if back and front hair root don't match up
         self.child["Custom"]["hair"]["parts"][1]["endColor"] = random.choice(color_options)
-        #insert accessory color here
+        if self.child["Custom"]["hair"]["parts"][1]["baseColor"] == color_m:
+            self.child["Custom"]["hair"]["parts"][1]["acsColor"][0] = color_f
+        else:
+            self.child["Custom"]["hair"]["parts"][1]["acsColor"][0] = color_m
 
         # Side Hair
         self.child["Custom"]["hair"]["parts"][2]["baseColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]

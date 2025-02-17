@@ -5,13 +5,13 @@ from kkloader import KoikatuCharaData
 from functools import reduce
 import _globals as _g
 
-child = chara.Child(mother="pure", father="toshi", output_name="new_child")
+child = chara.Child(mother="hazumi", father="toshi", output_name="new_hazumi")
 child.inherit_face()
 child.inherit_body()
 child.inherit_hair()
 child.save()
 
-# c = KoikatuCharaData.load("./fucked.png")
+# c = KoikatuCharaData.load("./fucky.png")
 # c.save_json("whatever")
 
 # print(child.mother.list_faceslider)
