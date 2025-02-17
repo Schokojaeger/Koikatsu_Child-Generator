@@ -11,6 +11,9 @@ child.inherit_body()
 child.inherit_hair()
 child.save()
 
+# c = KoikatuCharaData.load("./fucked.png")
+# c.save_json("whatever")
+
 # print(child.mother.list_faceslider)
 # face_width = ['Custom', 'face', 'shapeValueFace', 0]
 # char1 = KoikatuCharaData.load("./pure.png")

@@ -103,6 +103,14 @@ class Child:
     def inherit_hair(self):
         """ use either mother's or father's haircolor (or in combination) to determine the child's hair color.
             Will also choose random hair options from the vanilla selection """
+        
+        # Vanilla Hairstyles for Front Hair
+        front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))       # For some reason, the vanilla hairstyles end at 70 and pick back up at 200?????
+        # Set random front hair
+        self.child["Custom"]["hair"]["parts"][1]["id"] = random.choice(front_hair_options)
+        print(self.child["Custom"]["hair"]["parts"][1]["id"])
+
+        # Getting hair colors of parents
         color_m = self.mother["Custom"]["hair"]["parts"][0]["baseColor"]
         color_f = self.father["Custom"]["hair"]["parts"][0]["baseColor"]
         color_options = [color_m, color_f]
