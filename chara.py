@@ -116,6 +116,18 @@ class Child:
         self.child["Custom"]["hair"]["parts"][1]["id"] = random.choice(front_hair_options)
         print("Front Hair ID: ", self.child["Custom"]["hair"]["parts"][1]["id"])
 
+        # Vanilla Hairstyles for Side Hair
+        side_hair_options = [0, 1, 2, 3, 4, 6, 7]
+        # Set random Side Hair
+        self.child["Custom"]["hair"]["parts"][2]["id"] = random.choice(side_hair_options)
+        print("Side Hair ID: ", self.child["Custom"]["hair"]["parts"][2]["id"])
+
+        # Vanilla Extensions (eg. Ahoge)
+        extensions_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 200]
+        # Set random Extension
+        self.child["Custom"]["hair"]["parts"][3]["id"] = random.choice(extensions_options)
+        print("Extensions: ", self.child["Custom"]["hair"]["parts"][3]["id"])
+
         # Getting hair colors of parents
         color_m = self.mother["Custom"]["hair"]["parts"][0]["baseColor"]
         color_f = self.father["Custom"]["hair"]["parts"][0]["baseColor"]
