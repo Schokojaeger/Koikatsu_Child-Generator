@@ -58,7 +58,7 @@ class Child:
             if currm == 0.0:
                 continue
             middle_value = (currm + currf) / 2
-            # changing the randomization of head size
+            # changing the randomization of head size (can get pretty fucked)
             # we only use the mother's head size here to determine if the current item really is the head size
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][1]:
                 newitem = self.modify_value(middle_value, 0.2)
@@ -105,19 +105,19 @@ class Child:
             Will also choose random hair options from the vanilla selection """
 
         # Vanilla Hairstyles for Back Hair
-        back_hair_options = list(range(0, 21)) + list(range(31, 71)) + list(range(200, 210))
+        back_hair_options = list(range(0, 59)) + list(range(200, 210))                              # For some reason, the vanilla back hairstyles end at 58 and pick back up at 200?????
         # Set random Back Hair
         self.child["Custom"]["hair"]["parts"][0]["id"] = random.choice(back_hair_options)
         print("Back Hair ID: " , self.child["Custom"]["hair"]["parts"][0]["id"])
 
         # Vanilla Hairstyles for Front Hair
-        front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))       # For some reason, the vanilla hairstyles end at 20, pick back up at 70, stop again, and then start again at 200?????
+        front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))       # And here, the vanilla hairstyles end at 20, pick back up at 70, stop again, and then start again at 200?????
         # Set random Front Hair
         self.child["Custom"]["hair"]["parts"][1]["id"] = random.choice(front_hair_options)
         print("Front Hair ID: ", self.child["Custom"]["hair"]["parts"][1]["id"])
 
         # Vanilla Hairstyles for Side Hair
-        side_hair_options = [0, 1, 2, 3, 4, 6, 7]
+        side_hair_options = [0, 1, 2, 3, 5, 6, 7]
         # Set random Side Hair
         self.child["Custom"]["hair"]["parts"][2]["id"] = random.choice(side_hair_options)
         print("Side Hair ID: ", self.child["Custom"]["hair"]["parts"][2]["id"])
@@ -126,7 +126,13 @@ class Child:
         extensions_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 200]
         # Set random Extension
         self.child["Custom"]["hair"]["parts"][3]["id"] = random.choice(extensions_options)
-        print("Extensions: ", self.child["Custom"]["hair"]["parts"][3]["id"])
+        print("Extensions ID: ", self.child["Custom"]["hair"]["parts"][3]["id"])
+
+        # Vanilla Eyebrows
+        eyebrow_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 200, 201]
+        # Set random Eyebrows
+        self.child["Custom"]["face"]["eyebrowId"] = random.choice(eyebrow_options)
+        print("Eyebrows ID: ", self.child["Custom"]["face"]["eyebrowId"])
 
         # Getting hair colors of parents
         color_m = self.mother["Custom"]["hair"]["parts"][0]["baseColor"]
@@ -162,6 +168,9 @@ class Child:
         self.child["Custom"]["hair"]["parts"][3]["startColor"] = random.choice(color_options)
         self.child["Custom"]["hair"]["parts"][3]["endColor"] = random.choice(color_options)
         #insert accessory color here
+
+        # Eyebrow Color
+        self.child["Custom"]["face"]["eyebrowColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
 
     # ---------------------------------------------------------------------------------------------
     def save(self):
