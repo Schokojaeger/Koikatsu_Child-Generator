@@ -55,6 +55,8 @@ class Child:
         for i in _g.list_faceslider:
             currm = _g.getv(self.mother, i)
             currf = _g.getv(self.father, i)
+            if currm == self.mother["Custom"]["face"]["pupil"][0]["gradOffsetY"]:
+                print("HERE IT IS")
             if currm == 0.0:
                 continue
             middle_value = (currm + currf) / 2
@@ -173,6 +175,40 @@ class Child:
         self.child["Custom"]["face"]["eyebrowColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
 
     # ---------------------------------------------------------------------------------------------
+    def inherit_pupils(self):
+        """ choose random pupils, and color them using a random mix of parents' eyecolors """
+
+        # Vanilla Pupil options
+        pupil_options = list(range(0, 77)) + list(range(200, 217))
+        # Set random pupils
+        self.child["Custom"]["face"]["pupil"][0]["id"] = random.choice(pupil_options)
+        self.child["Custom"]["face"]["pupil"][1]["id"] = self.child["Custom"]["face"]["pupil"][0]["id"]         # We want to use the same pupils for now. Will maybe add an option for 2 different ones later
+        print("Pupils Eye 1 ID: ", self.child["Custom"]["face"]["pupil"][0]["id"])
+        print("Pupils Eye 2 ID: ", self.child["Custom"]["face"]["pupil"][1]["id"])
+
+        # Pupil Color
+        # Parents' eyecolors
+        primary_eyecolors = (self.father["Custom"]["face"]["pupil"][0]["baseColor"], self.mother["Custom"]["face"]["pupil"][0]["baseColor"])
+        secondary_eyecolors = (self.father["Custom"]["face"]["pupil"][0]["subColor"], self.mother["Custom"]["face"]["pupil"][0]["subColor"])
+
+        # Set random mix of primary eyecolor and secondary eyecolor chosen from parents
+        self.child["Custom"]["face"]["pupil"][0]["baseColor"] = random.choice(primary_eyecolors)
+        self.child["Custom"]["face"]["pupil"][1]["baseColor"] = self.child["Custom"]["face"]["pupil"][0]["baseColor"]           # Again, we want to use the same color for both eyes
+        self.child["Custom"]["face"]["pupil"][0]["subColor"] = random.choice(secondary_eyecolors)
+        self.child["Custom"]["face"]["pupil"][1]["subColor"] = self.child["Custom"]["face"]["pupil"][0]["subColor"]             # Again, we want to use the same color for both eyes
+
+        if self.child["Custom"]["face"]["pupil"][0]["baseColor"] == self.father["Custom"]["face"]["pupil"][0]["baseColor"]:
+            print("Base Color Father")
+        elif self.child["Custom"]["face"]["pupil"][0]["baseColor"] == self.mother["Custom"]["face"]["pupil"][0]["baseColor"]:
+            print("Base Color Mother")
+        
+        if self.child["Custom"]["face"]["pupil"][0]["subColor"] == self.father["Custom"]["face"]["pupil"][0]["subColor"]:
+            print("Sub Color Father")
+        elif self.child["Custom"]["face"]["pupil"][0]["subColor"] == self.mother["Custom"]["face"]["pupil"][0]["subColor"]:
+            print("Sub Color Mother")
+
+    # ---------------------------------------------------------------------------------------------
     def save(self):
         """ call .save() method of KoikatuCharaData with desired output name """
+
         self.child.save(f"./{self.output_name}.png")
