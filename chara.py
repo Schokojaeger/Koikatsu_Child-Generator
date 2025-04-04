@@ -131,7 +131,10 @@ class Child:
         print("Extensions ID: ", self.child["Custom"]["hair"]["parts"][3]["id"])
 
         # Vanilla Eyebrows
-        eyebrow_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 200, 201]
+        # NOTE I have currently decided to inherit the eyebrows directly from the parents. Should I decide against that in the future,
+        #      or should I add an option to randomise these, I will use the eyebrow options below again
+        #eyebrow_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 200, 201]
+        eyebrow_options = [self.father["Custom"]["face"]["eyebrowId"], self.mother["Custom"]["face"]["eyebrowId"]]
         # Set random Eyebrows
         self.child["Custom"]["face"]["eyebrowId"] = random.choice(eyebrow_options)
         print("Eyebrows ID: ", self.child["Custom"]["face"]["eyebrowId"])
@@ -206,6 +209,24 @@ class Child:
             print("Sub Color Father")
         elif self.child["Custom"]["face"]["pupil"][0]["subColor"] == self.mother["Custom"]["face"]["pupil"][0]["subColor"]:
             print("Sub Color Mother")
+        
+        # Eye Gradient
+        # Selection of Vanilla eye gradients
+        gradient_options = [0, 1, 2, 3]
+
+        # Set random eye gradient
+        self.child["Custom"]["face"]["pupil"][0]["gradMaskId"] = random.choice(gradient_options)
+        self.child["Custom"]["face"]["pupil"][1]["gradMaskId"] = self.child["Custom"]["face"]["pupil"][0]["gradMaskId"]         # Set same eye gradient for both eyes
+
+        print("Gradient: ", self.child["Custom"]["face"]["pupil"][0]["gradMaskId"])
+
+        # Set gradient strength, vertical position and size to default values to not create weird ass looking eyes
+        self.child["Custom"]["face"]["pupil"][0]["gradBlend"] = 0.46
+        self.child["Custom"]["face"]["pupil"][1]["gradBlend"] = 0.46
+        self.child["Custom"]["face"]["pupil"][0]["gradOffsetY"] = 0.48
+        self.child["Custom"]["face"]["pupil"][1]["gradOffsetY"] = 0.48
+        self.child["Custom"]["face"]["pupil"][0]["gradScale"] = 0.58
+        self.child["Custom"]["face"]["pupil"][1]["gradScale"] = 0.58
 
     # ---------------------------------------------------------------------------------------------
     def save(self):
