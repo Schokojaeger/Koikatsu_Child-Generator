@@ -228,6 +228,27 @@ class Child:
         self.child["Custom"]["face"]["pupil"][0]["gradScale"] = 0.58
         self.child["Custom"]["face"]["pupil"][1]["gradScale"] = 0.58
 
+        # Eye Highlights
+
+        # parent's upper highlights
+        upper_hl_options = [self.mother["Custom"]["face"]["hlUpId"], self.father["Custom"]["face"]["hlUpId"]]
+
+        self.child["Custom"]["face"]["hlUpId"] = random.choice(upper_hl_options)
+
+        if self.child["Custom"]["face"]["hlUpId"] == self.mother["Custom"]["face"]["hlUpId"]:
+            self.child["Custom"]["face"]["hlDownId"] = self.mother["Custom"]["face"]["hlDownId"]
+            print("Highlights: Mother")
+        else:
+            self.child["Custom"]["face"]["hlDownId"] = self.father["Custom"]["face"]["hlDownId"]
+            print("Highlights: Father")
+
+        # Upper and lower eyeliner will be taken from the respective parent of the same gender.
+        # This is done to retain a certain degree of likeness to the parents, instead of
+        # essentially just creating a random new character
+
+        # TODO add logic for eyeliners for male and female characters here when
+        # implementing male children.
+
     # ---------------------------------------------------------------------------------------------
     def save(self):
         """ call .save() method of KoikatuCharaData with desired output name """
