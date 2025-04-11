@@ -9,7 +9,7 @@ child = chara.Child(mother="Slangy", father="toshi", output_name="new_child")
 child.inherit_face()
 child.inherit_body()
 child.inherit_hair()
-child.inherit_pupils()
+child.inherit_eyes()
 child.save()
 
 # c = KoikatuCharaData.load("./huh.png")

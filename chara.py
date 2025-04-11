@@ -178,8 +178,18 @@ class Child:
         self.child["Custom"]["face"]["eyebrowColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
 
     # ---------------------------------------------------------------------------------------------
-    def inherit_pupils(self):
-        """ choose random pupils, and color them using a random mix of parents' eyecolors """
+    def inherit_eyes(self):
+        """ inherit eyes in a (somewhat) believable way """
+
+        # Sclera will be inherited from either one of the parents
+        # Parent's Scleras
+        sclera_options = (self.father["Custom"]["face"]["whiteId"], self.mother["Custom"]["face"]["whiteId"])
+        # Inherit Sclera from parents
+        self.child["Custom"]["face"]["whiteId"] = random.choice(sclera_options)
+        if self.child["Custom"]["face"]["whiteId"] == self.mother["Custom"]["face"]["whiteId"]:
+            print("Sclera Type: Mother")
+        else:
+            print("Sclera Type: Father")
 
         # Vanilla Pupil options
         pupil_options = list(range(0, 77)) + list(range(200, 217))
@@ -230,7 +240,7 @@ class Child:
 
         # Eye Highlights
 
-        # parent's upper highlights
+        # Parent's upper highlights
         upper_hl_options = [self.mother["Custom"]["face"]["hlUpId"], self.father["Custom"]["face"]["hlUpId"]]
 
         self.child["Custom"]["face"]["hlUpId"] = random.choice(upper_hl_options)
@@ -245,9 +255,20 @@ class Child:
         # Upper and lower eyeliner will be taken from the respective parent of the same gender.
         # This is done to retain a certain degree of likeness to the parents, instead of
         # essentially just creating a random new character
-
+        self.child["Custom"]["face"]["eyelineUpId"] = self.mother["Custom"]["face"]["eyelineUpId"]  # currently strictly taking the eyeliner from the mother since there are no male children yet
+        self.child["Custom"]["face"]["eyelineDownId"] = self.mother["Custom"]["face"]["eyelineDownId"]
         # TODO add logic for eyeliners for male and female characters here when
         # implementing male children.
+
+        # Setting eyeliner color according to haircolor
+        # NOTE currently using the eyeliner color of the parent, whose base haircolor has been inherited
+        # Will test this and then make a final decision
+        if self.child["Custom"]["hair"]["parts"][0]["baseColor"] == self.mother["Custom"]["hair"]["parts"][0]["baseColor"]:
+            self.child["Custom"]["face"]["eyelineColor"] = self.mother["Custom"]["face"]["eyelineColor"]
+            print("Eyeliner Color: Mother")
+        else:
+            self.child["Custom"]["face"]["eyelineColor"] = self.father["Custom"]["face"]["eyelineColor"]
+            print("Eyeliner Color: Father")
 
     # ---------------------------------------------------------------------------------------------
     def save(self):
