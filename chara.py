@@ -69,6 +69,21 @@ class Child:
                 newitem = self.modify_value(middle_value, 0.5)
                 # set resulting value as corresponding faceslider value of child
                 _g.setv(self.child, i, newitem)
+        
+        # Mole selection from parents and no mole
+        mole_options = (self.father["Custom"]["face"]["moleId"], self.mother["Custom"]["face"]["moleId"], 0)
+        # Set mole for child
+        self.child["Custom"]["face"]["moleId"] = random.choice(mole_options)
+        if self.child["Custom"]["face"]["moleId"] == self.mother["Custom"]["face"]["moleId"]:
+            self.child["Custom"]["face"]["moleColor"] = self.mother["Custom"]["face"]["moleColor"]
+            self.child["Custom"]["face"]["moleLayout"] = self.mother["Custom"]["face"]["moleLayout"]
+            print("Mole: Mother")
+        elif self.child["Custom"]["face"]["moleId"] == self.father["Custom"]["face"]["moleId"]:
+            self.child["Custom"]["face"]["moleColor"] = self.father["Custom"]["face"]["moleColor"]
+            self.child["Custom"]["face"]["moleLayout"] = self.father["Custom"]["face"]["moleLayout"]
+            print("Mole: Father")
+        elif self.child["Custom"]["face"]["moleId"] == 0:
+            print("Mole: None")
 
     # ---------------------------------------------------------------------------------------------
     def inherit_body(self):
