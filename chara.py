@@ -55,8 +55,6 @@ class Child:
         for i in _g.list_faceslider:
             currm = _g.getv(self.mother, i)
             currf = _g.getv(self.father, i)
-            if currm == self.mother["Custom"]["face"]["pupil"][0]["gradOffsetY"]:
-                print("HERE IT IS")
             if currm == 0.0:
                 continue
             middle_value = (currm + currf) / 2
@@ -69,7 +67,27 @@ class Child:
                 newitem = self.modify_value(middle_value, 0.5)
                 # set resulting value as corresponding faceslider value of child
                 _g.setv(self.child, i, newitem)
-        
+
+        # Inherit nose from parents
+        nose_options = (self.mother["Custom"]["face"]["noseId"], self.father["Custom"]["face"]["noseId"])
+        self.child["Custom"]["face"]["noseId"] = random.choice(nose_options)
+        if self.child["Custom"]["face"]["noseId"] == self.mother["Custom"]["face"]["noseId"]:
+            print("Nose: Mother")
+        else:
+            print("Nose: Father")
+
+        # Set Lip Line Type to either inherit from parents or 0
+        lipline_options = (self.mother["Custom"]["face"]["lipLineId"], self.father["Custom"]["face"]["lipLineId"], 0)
+        self.child["Custom"]["face"]["lipLineId"] = random.choice(lipline_options)
+        if self.child["Custom"]["face"]["lipLineId"] == self.mother["Custom"]["face"]["lipLineId"]:
+            print("Lip Line: Mother")
+        elif self.child["Custom"]["face"]["lipLineId"] == self.father["Custom"]["face"]["lipLineId"]:
+            print("Lip Line: Father")
+        elif self.child["Custom"]["face"]["lipLineId"] == 0:
+            print("Lip Line: None")
+        # TODO set Lip Line color according to inherited skin color (Black Skin with
+        # white line could look really weird for example)
+
         # Mole selection from parents and no mole
         mole_options = (self.father["Custom"]["face"]["moleId"], self.mother["Custom"]["face"]["moleId"], 0)
         # Set mole for child
@@ -84,6 +102,16 @@ class Child:
             print("Mole: Father")
         elif self.child["Custom"]["face"]["moleId"] == 0:
             print("Mole: None")
+
+        # Set all makeup to empty
+        # NOTE Some vanilla options for various makeup can look a bit weird at times. So
+        # as to not create some abominations and to give the users a "clean" version of
+        # their character, we'll just leave all makeup options empty
+        self.child["Custom"]["face"]["baseMakeup"]["eyeshadowId"] = 0
+        self.child["Custom"]["face"]["baseMakeup"]["cheekId"] = 0
+        self.child["Custom"]["face"]["baseMakeup"]["lipId"] = 0
+        self.child["Custom"]["face"]["baseMakeup"]["paintId"][0] = 0
+        self.child["Custom"]["face"]["baseMakeup"]["paintId"][1] = 0
 
     # ---------------------------------------------------------------------------------------------
     def inherit_body(self):
@@ -130,6 +158,17 @@ class Child:
         # Vanilla Hairstyles for Front Hair
         front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))       # And here, the vanilla hairstyles end at 20, pick back up at 70, stop again, and then start again at 200?????
         # Set random Front Hair
+
+        # NOTE These two lines below delete certain strings from the "KKEx" Data Block of a card. In case of one of my tested cards,
+        # they control modded front and back hair. Whenever I tried to just change the ID of the hair, it wouldn't work because those two strings
+        # override whatever I set. By deleting them, I can set the hair to whatever I want
+
+        #del self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][6]
+        #del self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][6]     # this one is index '6' again, since when the previous one is deleted, the old '7' becomes the new '6'
+        
+        # TODO make the deletion of KKEx Strings dynamic for every type of hair (front, back etc.) and think about how to do it for accessories as well
+        # Maybe detect keywords like 'hair' in the KKEx strings
+
         self.child["Custom"]["hair"]["parts"][1]["id"] = random.choice(front_hair_options)
         print("Front Hair ID: ", self.child["Custom"]["hair"]["parts"][1]["id"])
 
@@ -140,10 +179,17 @@ class Child:
         print("Side Hair ID: ", self.child["Custom"]["hair"]["parts"][2]["id"])
 
         # Vanilla Extensions (eg. Ahoge)
-        extensions_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 200]
-        # Set random Extension
-        self.child["Custom"]["hair"]["parts"][3]["id"] = random.choice(extensions_options)
-        print("Extensions ID: ", self.child["Custom"]["hair"]["parts"][3]["id"])
+        # We give a 50/50 chance of extensions or else almost every character will get one
+        # because of the amount of them ingame compared to just one option of having none
+        do_ahoge = random.choice([True, False])
+        if do_ahoge:
+            extensions_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 200]
+            # Set random Extension
+            self.child["Custom"]["hair"]["parts"][3]["id"] = random.choice(extensions_options)
+            print("Extensions ID: ", self.child["Custom"]["hair"]["parts"][3]["id"])
+        else:
+            self.child["Custom"]["hair"]["parts"][3]["id"] = 0
+            print("No Extensions")
 
         # Vanilla Eyebrows
         # NOTE I have currently decided to inherit the eyebrows directly from the parents. Should I decide against that in the future,
@@ -284,6 +330,10 @@ class Child:
         else:
             self.child["Custom"]["face"]["eyelineColor"] = self.father["Custom"]["face"]["eyelineColor"]
             print("Eyeliner Color: Father")
+        
+        # Set Eyes and Eyebrows to not show through hair
+        self.child["Custom"]["face"]["foregroundEyes"] = 1
+        self.child["Custom"]["face"]["foregroundEyebrow"] = 1
 
     # ---------------------------------------------------------------------------------------------
     def save(self):
