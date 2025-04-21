@@ -37,6 +37,14 @@ class Child:
         self.child["Status"] = copy.deepcopy(self.mother["Status"])
         self.output_name = output_name
 
+        # Because of all the different kinds of accessories (vanilla or modded), and all the things
+        # they can fuck up, children will not inherit any accessories whatsoever
+        # NOTE perhaps in the future you'll be able to select which ones to carry over
+        c = 0
+        while c < 7:
+            for i in self.child["Coordinate"][c]["accessory"]["parts"]:
+                i["type"] = 0
+            c += 1
 
     # ---------------------------------------------------------------------------------------------
     def modify_value(self, base_value, percentage_change):
@@ -159,15 +167,39 @@ class Child:
         front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))       # And here, the vanilla hairstyles end at 20, pick back up at 70, stop again, and then start again at 200?????
         # Set random Front Hair
 
-        # NOTE These two lines below delete certain strings from the "KKEx" Data Block of a card. In case of one of my tested cards,
-        # they control modded front and back hair. Whenever I tried to just change the ID of the hair, it wouldn't work because those two strings
-        # override whatever I set. By deleting them, I can set the hair to whatever I want
+        # NOTE Below, certain strings from the "KKEx" Data Block of a card get deleted.
+        # In case of one of my tested cards, some modded front and back hair.
+        # Whenever I tried to just change the ID of the hair, it wouldn't work because
+        # those two strings override whatever I set. By deleting them,
+        # I can set the hair to whatever I want
 
-        #del self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][6]
-        #del self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][6]     # this one is index '6' again, since when the previous one is deleted, the old '7' becomes the new '6'
-        
-        # TODO make the deletion of KKEx Strings dynamic for every type of hair (front, back etc.) and think about how to do it for accessories as well
-        # Maybe detect keywords like 'hair' in the KKEx strings
+        # Empty several KKEx attributes that can potentially fuck up a new character
+        # TODO if any new ones appear that concern hair, add them here
+        try:
+            del self.child["KKEx"]["com.deathweasel.bepinex.hairaccessorycustomizer"][1]
+        except KeyError:
+            pass
+
+        # TODO Check if this is really needed here. Probably has nothing to do with hair
+        # Was relevant for Card: YN
+        try:
+            del self.child["KKEx"]["org.njaecha.plugins.objimport"]
+        except KeyError:
+            pass
+
+        try:
+            counter = -1
+            for _ in self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"]:
+                counter += 1
+
+            while counter >= 0:
+                if b'hair' in self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][counter].lower():
+                    del self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][counter]
+                    counter -= 1
+                else:
+                    counter -= 1
+        except KeyError:
+            pass
 
         self.child["Custom"]["hair"]["parts"][1]["id"] = random.choice(front_hair_options)
         print("Front Hair ID: ", self.child["Custom"]["hair"]["parts"][1]["id"])

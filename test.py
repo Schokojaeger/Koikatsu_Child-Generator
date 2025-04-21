@@ -12,13 +12,6 @@ child.inherit_hair()
 child.inherit_eyes()
 child.save()
 
-# c = KoikatuCharaData.load("./yui.png")
-# based = c["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][8]
-# print(based)
-# c["Custom"]["hair"]["parts"][1]["id"] = 0
-# c.save("Idontevenknow.png")
-# c.save_json("whatever")
-
 # print(child.mother.list_faceslider)
 # face_width = ['Custom', 'face', 'shapeValueFace', 0]
 # char1 = KoikatuCharaData.load("./pure.png")
