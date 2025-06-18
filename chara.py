@@ -1,4 +1,5 @@
-""" base class for character creation/manipulation. This is supposed to make accessing members of cards easier """
+""" base class for character creation/manipulation.
+    This is supposed to make accessing members of cards easier """
 
 import copy
 import random
@@ -9,13 +10,16 @@ from father import Father
 
 
 class Child:
+    """ base class for creating children """
 
     def __init__(self, mother, father, output_name):
         if not isinstance(mother, str) and isinstance(father, str):
-            raise TypeError("Both 'Mother' and 'Father' Files must be the filename of the corresponding .png file in String Format")
+            raise TypeError("Both 'Mother' and 'Father' Files must be the "\
+                            "filename of the corresponding .png file in String Format")
 
         if not isinstance(output_name, str):
-            raise TypeError("Parameter 'output_name' should be a string with the name the file should be called after creation")
+            raise TypeError("Parameter 'output_name' should be a string with "\
+                            "the name the file should be called after creation")
 
         self.motherc = Mother(f"./{mother}.png")
         self.mother = KoikatuCharaData.load(f"./{mother}.png")
@@ -52,6 +56,8 @@ class Child:
         min_value = base_value - (base_value * percentage_change)
         max_value = base_value + (base_value * percentage_change)
         new_value = random.uniform(min_value, max_value)
+        # TODO add minimum and maximum values here for the sliders
+        # or you'll get very ugly integer overflows
 
         return new_value
 
@@ -59,7 +65,8 @@ class Child:
     def inherit_face(self):
         """ take faceslider values of parent characters, modify and save as child facesliders """
 
-        # loop through facesliders and modify all values to a random degree (currently 50% up or down from base)
+        # loop through facesliders and modify all values to a random degree
+        # (currently 50% up or down from base)
         for i in _g.list_faceslider:
             currm = _g.getv(self.mother, i)
             currf = _g.getv(self.father, i)
@@ -67,7 +74,8 @@ class Child:
                 continue
             middle_value = (currm + currf) / 2
             # changing the randomization of head size (can get pretty fucked)
-            # we only use the mother's head size here to determine if the current item really is the head size
+            # we only use the mother's head size here to determine if the current
+            # item really is the head size
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][1]:
                 newitem = self.modify_value(middle_value, 0.2)
                 _g.setv(self.child, i, newitem)
@@ -77,7 +85,9 @@ class Child:
                 _g.setv(self.child, i, newitem)
 
         # Inherit nose from parents
-        nose_options = (self.mother["Custom"]["face"]["noseId"], self.father["Custom"]["face"]["noseId"])
+        nose_options = (self.mother["Custom"]["face"]["noseId"],
+                        self.father["Custom"]["face"]["noseId"])
+
         self.child["Custom"]["face"]["noseId"] = random.choice(nose_options)
         if self.child["Custom"]["face"]["noseId"] == self.mother["Custom"]["face"]["noseId"]:
             print("Nose: Mother")
@@ -85,19 +95,24 @@ class Child:
             print("Nose: Father")
 
         # Set Lip Line Type to either inherit from parents or 0
-        lipline_options = (self.mother["Custom"]["face"]["lipLineId"], self.father["Custom"]["face"]["lipLineId"], 0)
+        lipline_options = (self.mother["Custom"]["face"]["lipLineId"],
+                           self.father["Custom"]["face"]["lipLineId"], 0)
         self.child["Custom"]["face"]["lipLineId"] = random.choice(lipline_options)
         if self.child["Custom"]["face"]["lipLineId"] == self.mother["Custom"]["face"]["lipLineId"]:
             print("Lip Line: Mother")
-        elif self.child["Custom"]["face"]["lipLineId"] == self.father["Custom"]["face"]["lipLineId"]:
+        elif (self.child["Custom"]["face"]["lipLineId"] ==
+              self.father["Custom"]["face"]["lipLineId"]):
+
             print("Lip Line: Father")
+
         elif self.child["Custom"]["face"]["lipLineId"] == 0:
             print("Lip Line: None")
         # TODO set Lip Line color according to inherited skin color (Black Skin with
         # white line could look really weird for example)
 
         # Mole selection from parents and no mole
-        mole_options = (self.father["Custom"]["face"]["moleId"], self.mother["Custom"]["face"]["moleId"], 0)
+        mole_options = (self.father["Custom"]["face"]["moleId"],
+                        self.mother["Custom"]["face"]["moleId"], 0)
         # Set mole for child
         self.child["Custom"]["face"]["moleId"] = random.choice(mole_options)
         if self.child["Custom"]["face"]["moleId"] == self.mother["Custom"]["face"]["moleId"]:
@@ -154,17 +169,21 @@ class Child:
 
     # ---------------------------------------------------------------------------------------------
     def inherit_hair(self):
-        """ use either mother's or father's haircolor (or in combination) to determine the child's hair color.
-            Will also choose random hair options from the vanilla selection """
+        """ use either mother's or father's haircolor (or in combination)
+            to determine the child's hair color. Will also choose random
+            hair options from the vanilla selection """
 
         # Vanilla Hairstyles for Back Hair
-        back_hair_options = list(range(0, 59)) + list(range(200, 210))                              # For some reason, the vanilla back hairstyles end at 58 and pick back up at 200?????
+        # For some reason, the vanilla back hairstyles end at 58 and pick back up at 200?????
+        back_hair_options = list(range(0, 59)) + list(range(200, 210))
         # Set random Back Hair
         self.child["Custom"]["hair"]["parts"][0]["id"] = random.choice(back_hair_options)
         print("Back Hair ID: " , self.child["Custom"]["hair"]["parts"][0]["id"])
 
         # Vanilla Hairstyles for Front Hair
-        front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))       # And here, the vanilla hairstyles end at 20, pick back up at 70, stop again, and then start again at 200?????
+        # And here, the vanilla hairstyles end at 20, pick back up at 70, stop again,
+        # and then start again at 200?????
+        front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))
         # Set random Front Hair
 
         # NOTE Below, certain strings from the "KKEx" Data Block of a card get deleted.
@@ -193,11 +212,16 @@ class Child:
                 counter += 1
 
             while counter >= 0:
-                if b'hair' in self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][counter].lower():
-                    del self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"][counter]
+                if b'hair' in (self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"]
+                               [1]["info"][counter].lower()):
+
+                    del (self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"]
+                         [1]["info"][counter])
                     counter -= 1
+
                 else:
                     counter -= 1
+
         except KeyError:
             pass
 
@@ -224,10 +248,13 @@ class Child:
             print("No Extensions")
 
         # Vanilla Eyebrows
-        # NOTE I have currently decided to inherit the eyebrows directly from the parents. Should I decide against that in the future,
-        #      or should I add an option to randomise these, I will use the eyebrow options below again
+        # NOTE I have currently decided to inherit the eyebrows directly from the parents.
+        #      Should I decide against that in the future, or should I add an option to
+        #      randomise these, I will use the eyebrow options below again
         #eyebrow_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 200, 201]
-        eyebrow_options = [self.father["Custom"]["face"]["eyebrowId"], self.mother["Custom"]["face"]["eyebrowId"]]
+        eyebrow_options = [self.father["Custom"]["face"]["eyebrowId"],
+                           self.mother["Custom"]["face"]["eyebrowId"]]
+
         # Set random Eyebrows
         self.child["Custom"]["face"]["eyebrowId"] = random.choice(eyebrow_options)
         print("Eyebrows ID: ", self.child["Custom"]["face"]["eyebrowId"])
@@ -247,8 +274,12 @@ class Child:
             self.child["Custom"]["hair"]["parts"][0]["acsColor"][0] = color_m
 
         # Front Hair
-        self.child["Custom"]["hair"]["parts"][1]["baseColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
-        self.child["Custom"]["hair"]["parts"][1]["startColor"] = self.child["Custom"]["hair"]["parts"][0]["startColor"]     # looks really fucking weird if back and front hair root don't match up
+        self.child["Custom"]["hair"]["parts"][1]["baseColor"] = (self.child["Custom"]["hair"]
+                                                                 ["parts"][0]["baseColor"])
+
+        # looks really fucking weird if back and front hair root don't match up
+        self.child["Custom"]["hair"]["parts"][1]["startColor"] = (self.child["Custom"]["hair"]
+                                                                  ["parts"][0]["startColor"])
         self.child["Custom"]["hair"]["parts"][1]["endColor"] = random.choice(color_options)
         if self.child["Custom"]["hair"]["parts"][1]["baseColor"] == color_m:
             self.child["Custom"]["hair"]["parts"][1]["acsColor"][0] = color_f
@@ -256,19 +287,22 @@ class Child:
             self.child["Custom"]["hair"]["parts"][1]["acsColor"][0] = color_m
 
         # Side Hair
-        self.child["Custom"]["hair"]["parts"][2]["baseColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
+        self.child["Custom"]["hair"]["parts"][2]["baseColor"] = (self.child["Custom"]["hair"]
+                                                                 ["parts"][0]["baseColor"])
         self.child["Custom"]["hair"]["parts"][2]["startColor"] = random.choice(color_options)
         self.child["Custom"]["hair"]["parts"][2]["endColor"] = random.choice(color_options)
         #insert accessory color here
 
         # Extension Color
-        self.child["Custom"]["hair"]["parts"][3]["baseColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
+        self.child["Custom"]["hair"]["parts"][3]["baseColor"] = (self.child["Custom"]["hair"]
+                                                                 ["parts"][0]["baseColor"])
         self.child["Custom"]["hair"]["parts"][3]["startColor"] = random.choice(color_options)
         self.child["Custom"]["hair"]["parts"][3]["endColor"] = random.choice(color_options)
         #insert accessory color here
 
         # Eyebrow Color
-        self.child["Custom"]["face"]["eyebrowColor"] = self.child["Custom"]["hair"]["parts"][0]["baseColor"]
+        self.child["Custom"]["face"]["eyebrowColor"] = (self.child["Custom"]["hair"]
+                                                        ["parts"][0]["baseColor"])
 
     # ---------------------------------------------------------------------------------------------
     def inherit_eyes(self):
@@ -276,7 +310,8 @@ class Child:
 
         # Sclera will be inherited from either one of the parents
         # Parent's Scleras
-        sclera_options = (self.father["Custom"]["face"]["whiteId"], self.mother["Custom"]["face"]["whiteId"])
+        sclera_options = (self.father["Custom"]["face"]["whiteId"],
+                          self.mother["Custom"]["face"]["whiteId"])
         # Inherit Sclera from parents
         self.child["Custom"]["face"]["whiteId"] = random.choice(sclera_options)
         if self.child["Custom"]["face"]["whiteId"] == self.mother["Custom"]["face"]["whiteId"]:
@@ -288,42 +323,69 @@ class Child:
         pupil_options = list(range(0, 77)) + list(range(200, 217))
         # Set random pupils
         self.child["Custom"]["face"]["pupil"][0]["id"] = random.choice(pupil_options)
-        self.child["Custom"]["face"]["pupil"][1]["id"] = self.child["Custom"]["face"]["pupil"][0]["id"]         # We want to use the same pupils for now. Will maybe add an option for 2 different ones later
+
+        # We want to use the same pupils for now.
+        # Will maybe add an option for 2 different ones later
+        self.child["Custom"]["face"]["pupil"][1]["id"] = (self.child["Custom"]["face"]
+                                                          ["pupil"][0]["id"])
         print("Pupils Eye 1 ID: ", self.child["Custom"]["face"]["pupil"][0]["id"])
         print("Pupils Eye 2 ID: ", self.child["Custom"]["face"]["pupil"][1]["id"])
 
         # Pupil Color
         # Parents' eyecolors
-        primary_eyecolors = (self.father["Custom"]["face"]["pupil"][0]["baseColor"], self.mother["Custom"]["face"]["pupil"][0]["baseColor"])
-        secondary_eyecolors = (self.father["Custom"]["face"]["pupil"][0]["subColor"], self.mother["Custom"]["face"]["pupil"][0]["subColor"])
+        primary_eyecolors = (self.father["Custom"]["face"]["pupil"][0]["baseColor"],
+                             self.mother["Custom"]["face"]["pupil"][0]["baseColor"])
+
+        secondary_eyecolors = (self.father["Custom"]["face"]["pupil"][0]["subColor"],
+                               self.mother["Custom"]["face"]["pupil"][0]["subColor"])
 
         # Set random mix of primary eyecolor and secondary eyecolor chosen from parents
         self.child["Custom"]["face"]["pupil"][0]["baseColor"] = random.choice(primary_eyecolors)
-        self.child["Custom"]["face"]["pupil"][1]["baseColor"] = self.child["Custom"]["face"]["pupil"][0]["baseColor"]           # Again, we want to use the same color for both eyes
-        self.child["Custom"]["face"]["pupil"][0]["subColor"] = random.choice(secondary_eyecolors)
-        self.child["Custom"]["face"]["pupil"][1]["subColor"] = self.child["Custom"]["face"]["pupil"][0]["subColor"]             # Again, we want to use the same color for both eyes
 
-        if self.child["Custom"]["face"]["pupil"][0]["baseColor"] == self.father["Custom"]["face"]["pupil"][0]["baseColor"]:
+        # Again, we want to use the same color for both eyes
+        self.child["Custom"]["face"]["pupil"][1]["baseColor"] = (self.child["Custom"]["face"]
+                                                                 ["pupil"][0]["baseColor"])
+        self.child["Custom"]["face"]["pupil"][0]["subColor"] = random.choice(secondary_eyecolors)
+
+        # Again, we want to use the same color for both eyes
+        self.child["Custom"]["face"]["pupil"][1]["subColor"] = (self.child["Custom"]["face"]
+                                                                ["pupil"][0]["subColor"])
+
+        if (self.child["Custom"]["face"]["pupil"][0]["baseColor"] ==
+            self.father["Custom"]["face"]["pupil"][0]["baseColor"]):
+
             print("Base Color Father")
-        elif self.child["Custom"]["face"]["pupil"][0]["baseColor"] == self.mother["Custom"]["face"]["pupil"][0]["baseColor"]:
+
+        elif (self.child["Custom"]["face"]["pupil"][0]["baseColor"] ==
+              self.mother["Custom"]["face"]["pupil"][0]["baseColor"]):
+
             print("Base Color Mother")
-        
-        if self.child["Custom"]["face"]["pupil"][0]["subColor"] == self.father["Custom"]["face"]["pupil"][0]["subColor"]:
+
+        if (self.child["Custom"]["face"]["pupil"][0]["subColor"] ==
+            self.father["Custom"]["face"]["pupil"][0]["subColor"]):
+
             print("Sub Color Father")
-        elif self.child["Custom"]["face"]["pupil"][0]["subColor"] == self.mother["Custom"]["face"]["pupil"][0]["subColor"]:
+
+        elif (self.child["Custom"]["face"]["pupil"][0]["subColor"] ==
+              self.mother["Custom"]["face"]["pupil"][0]["subColor"]):
+
             print("Sub Color Mother")
-        
+
         # Eye Gradient
         # Selection of Vanilla eye gradients
         gradient_options = [0, 1, 2, 3]
 
         # Set random eye gradient
         self.child["Custom"]["face"]["pupil"][0]["gradMaskId"] = random.choice(gradient_options)
-        self.child["Custom"]["face"]["pupil"][1]["gradMaskId"] = self.child["Custom"]["face"]["pupil"][0]["gradMaskId"]         # Set same eye gradient for both eyes
+
+        # Set same eye gradient for both eyes
+        self.child["Custom"]["face"]["pupil"][1]["gradMaskId"] = (self.child["Custom"]["face"]
+                                                                  ["pupil"][0]["gradMaskId"])
 
         print("Gradient: ", self.child["Custom"]["face"]["pupil"][0]["gradMaskId"])
 
-        # Set gradient strength, vertical position and size to default values to not create weird ass looking eyes
+        # Set gradient strength, vertical position and size to default
+        # values to not create weird ass looking eyes
         self.child["Custom"]["face"]["pupil"][0]["gradBlend"] = 0.46
         self.child["Custom"]["face"]["pupil"][1]["gradBlend"] = 0.46
         self.child["Custom"]["face"]["pupil"][0]["gradOffsetY"] = 0.48
@@ -334,7 +396,8 @@ class Child:
         # Eye Highlights
 
         # Parent's upper highlights
-        upper_hl_options = [self.mother["Custom"]["face"]["hlUpId"], self.father["Custom"]["face"]["hlUpId"]]
+        upper_hl_options = [self.mother["Custom"]["face"]["hlUpId"],
+                            self.father["Custom"]["face"]["hlUpId"]]
 
         self.child["Custom"]["face"]["hlUpId"] = random.choice(upper_hl_options)
 
@@ -348,21 +411,30 @@ class Child:
         # Upper and lower eyeliner will be taken from the respective parent of the same gender.
         # This is done to retain a certain degree of likeness to the parents, instead of
         # essentially just creating a random new character
-        self.child["Custom"]["face"]["eyelineUpId"] = self.mother["Custom"]["face"]["eyelineUpId"]  # currently strictly taking the eyeliner from the mother since there are no male children yet
-        self.child["Custom"]["face"]["eyelineDownId"] = self.mother["Custom"]["face"]["eyelineDownId"]
+
+        # currently strictly taking the eyeliner from the mother since
+        # there are no male children yet
+        self.child["Custom"]["face"]["eyelineUpId"] = self.mother["Custom"]["face"]["eyelineUpId"]
+        self.child["Custom"]["face"]["eyelineDownId"] = (self.mother["Custom"]["face"]
+                                                         ["eyelineDownId"])
         # TODO add logic for eyeliners for male and female characters here when
         # implementing male children.
 
         # Setting eyeliner color according to haircolor
-        # NOTE currently using the eyeliner color of the parent, whose base haircolor has been inherited
-        # Will test this and then make a final decision
-        if self.child["Custom"]["hair"]["parts"][0]["baseColor"] == self.mother["Custom"]["hair"]["parts"][0]["baseColor"]:
-            self.child["Custom"]["face"]["eyelineColor"] = self.mother["Custom"]["face"]["eyelineColor"]
+        # NOTE currently using the eyeliner color of the parent, whose base haircolor
+        # has been inherited. Will test this and then make a final decision
+        if (self.child["Custom"]["hair"]["parts"][0]["baseColor"] ==
+            self.mother["Custom"]["hair"]["parts"][0]["baseColor"]):
+
+            self.child["Custom"]["face"]["eyelineColor"] = (self.mother["Custom"]["face"]
+                                                            ["eyelineColor"])
             print("Eyeliner Color: Mother")
+
         else:
-            self.child["Custom"]["face"]["eyelineColor"] = self.father["Custom"]["face"]["eyelineColor"]
+            self.child["Custom"]["face"]["eyelineColor"] = (self.father["Custom"]["face"]
+                                                            ["eyelineColor"])
             print("Eyeliner Color: Father")
-        
+
         # Set Eyes and Eyebrows to not show through hair
         self.child["Custom"]["face"]["foregroundEyes"] = 1
         self.child["Custom"]["face"]["foregroundEyebrow"] = 1
