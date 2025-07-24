@@ -51,7 +51,7 @@ class Child:
             c += 1
 
     # ---------------------------------------------------------------------------------------------
-    def modify_value(self, base_value, percentage_change):
+    def modify_value(self, base_value, percentage_change) -> float:
         """ change current value randomly within a certain range """
         min_value = base_value - (base_value * percentage_change)
         max_value = base_value + (base_value * percentage_change)
@@ -62,7 +62,7 @@ class Child:
         return new_value
 
     # ---------------------------------------------------------------------------------------------
-    def inherit_face(self):
+    def inherit_face(self) -> None:
         """ take faceslider values of parent characters, modify and save as child facesliders """
 
         # loop through facesliders and modify all values to a random degree
@@ -73,7 +73,7 @@ class Child:
             if currm == 0.0:
                 continue
             middle_value = (currm + currf) / 2
-            # changing the randomization of head size (can get pretty fucked)
+            # changing the randomization of head size to 20% (can get pretty fucked)
             # we only use the mother's head size here to determine if the current
             # item really is the head size
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][1]:
@@ -137,7 +137,8 @@ class Child:
         self.child["Custom"]["face"]["baseMakeup"]["paintId"][1] = 0
 
     # ---------------------------------------------------------------------------------------------
-    def inherit_body(self):
+    # Parameter "gender": True == Female, False == Male
+    def inherit_body(self, gender: bool) -> None:
         """ take bodyslider values of parent characters, modify and save as child bodysliders """
 
         # loop through bodysliders and modify all values to a random degree
@@ -148,16 +149,26 @@ class Child:
                 continue
             # changing the randomization of breast size
             # Using the mother's breast size since using a middle value of both parents would likely
-            # always result in a small chest size (father will normally have a very small size)
+            # always result in a small chest size (father will usually have a very small size)
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][4]:
+                if not gender:
+                    # for male children, breast size is irrelevant
+                    _g.setv(self.child, i, 0) # TODO check if 0 is actually correct for males
+                    print("Male: No Boobs")
+                    continue
                 # using a modifier of 50% to not always get basically the same size as the mother
                 newitem = self.modify_value(currm, 0.5)
                 print("Boobs", newitem)
                 _g.setv(self.child, i, newitem)
                 continue
             # changing the randomization of butt angle (can get really fucked up)
-            # Using the mother's butt size since the father should normally have a small butt
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][27]:
+                # For male children, butt size will be determined by the father's
+                if not gender:
+                    newitem = self.modify_value(currf, 0.15)
+                    _g.setv(self.child, i, newitem)
+                    continue
+                # Using the mother's butt size for female children
                 newitem = self.modify_value(currm, 0.15)
                 _g.setv(self.child, i, newitem)
                 continue
@@ -168,12 +179,15 @@ class Child:
             _g.setv(self.child, i, newitem)
 
     # ---------------------------------------------------------------------------------------------
-    def inherit_hair(self):
+    # Parameter "gender": True == Female, False == Male
+    # TODO add functionality for male children
+    def inherit_hair(self, gender: bool) -> None:
         """ use either mother's or father's haircolor (or in combination)
             to determine the child's hair color. Will also choose random
             hair options from the vanilla selection """
 
         # Vanilla Hairstyles for Back Hair
+        # TODO add male hair selection
         # For some reason, the vanilla back hairstyles end at 58 and pick back up at 200?????
         back_hair_options = list(range(0, 59)) + list(range(200, 210))
         # Set random Back Hair
@@ -229,6 +243,7 @@ class Child:
         print("Front Hair ID: ", self.child["Custom"]["hair"]["parts"][1]["id"])
 
         # Vanilla Hairstyles for Side Hair
+        # TODO add male hair selection
         side_hair_options = [0, 1, 2, 3, 5, 6, 7]
         # Set random Side Hair
         self.child["Custom"]["hair"]["parts"][2]["id"] = random.choice(side_hair_options)
@@ -305,7 +320,8 @@ class Child:
                                                         ["parts"][0]["baseColor"])
 
     # ---------------------------------------------------------------------------------------------
-    def inherit_eyes(self):
+    # Parameter "gender": True == Female, False == Male
+    def inherit_eyes(self, gender: bool):
         """ inherit eyes in a (somewhat) believable way """
 
         # Sclera will be inherited from either one of the parents
@@ -411,18 +427,18 @@ class Child:
         # Upper and lower eyeliner will be taken from the respective parent of the same gender.
         # This is done to retain a certain degree of likeness to the parents, instead of
         # essentially just creating a random new character
-
-        # currently strictly taking the eyeliner from the mother since
-        # there are no male children yet
-        self.child["Custom"]["face"]["eyelineUpId"] = self.mother["Custom"]["face"]["eyelineUpId"]
-        self.child["Custom"]["face"]["eyelineDownId"] = (self.mother["Custom"]["face"]
+        if gender:
+            self.child["Custom"]["face"]["eyelineUpId"] = (self.mother["Custom"]["face"]
+                                                           ["eyelineUpId"])
+            self.child["Custom"]["face"]["eyelineDownId"] = (self.mother["Custom"]["face"]
                                                          ["eyelineDownId"])
-        # TODO add logic for eyeliners for male and female characters here when
-        # implementing male children.
+        else:
+            self.child["Custom"]["face"]["eyelineUpId"] = (self.father["Custom"]["face"]
+                                                           ["eyelineUpId"])
+            self.child["Custom"]["face"]["eyelineDownId"] = (self.father["Custom"]["face"]
+                                                         ["eyelineDownId"])
 
         # Setting eyeliner color according to haircolor
-        # NOTE currently using the eyeliner color of the parent, whose base haircolor
-        # has been inherited. Will test this and then make a final decision
         if (self.child["Custom"]["hair"]["parts"][0]["baseColor"] ==
             self.mother["Custom"]["hair"]["parts"][0]["baseColor"]):
 
