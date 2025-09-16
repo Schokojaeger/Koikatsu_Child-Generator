@@ -3,14 +3,14 @@
 from kkloader import KoikatuCharaData
 
 class Father():
-    """  """
+    """ class for accessing all values of a male card """
     def __init__(self, father):
         if isinstance(father, str):
             self.father = KoikatuCharaData.load(father)
         else:
             raise TypeError("passed father file is not of type String (should just be filename)")
-        
-        # Facesliders ------------------------------------------------------------------------------------
+
+        # Facesliders
         self.face_width = self.father["Custom"]["face"]["shapeValueFace"][0]
         self.upper_face_depth = self.father["Custom"]["face"]["shapeValueFace"][1]
         self.upper_face_height = self.father["Custom"]["face"]["shapeValueFace"][2]
@@ -77,7 +77,7 @@ class Father():
                                 self.mouth_width, self.mouth_depth, self.upper_lip_depth, self.lower_lip_depth, self.mouth_corner_shape, 
                                 self.ear_size, self.ear_angle_y, self.ear_angle_z, self.upper_ear_shape, self.lower_ear_shape, self.head_size]
         
-        # Bodysliders ------------------------------------------------------------------------------------
+        # Bodysliders
         self.body_height = self.father["Custom"]["body"]["shapeValueBody"][0]
         self.neck_width = self.father["Custom"]["body"]["shapeValueBody"][2]
         self.neck_thickness = self.father["Custom"]["body"]["shapeValueBody"][3]

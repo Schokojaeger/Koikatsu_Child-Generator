@@ -1,7 +1,7 @@
 """ global constants to be used by chara classes """
 from functools import reduce
 
-# Facesliders --------------------------------------------------------------------------------------------
+# Facesliders
 face_width = ["Custom", "face", "shapeValueFace", 0]
 upper_face_depth = ["Custom", "face", "shapeValueFace", 1]
 upper_face_height = ["Custom", "face", "shapeValueFace", 2]
@@ -54,7 +54,10 @@ ear_angle_y = ["Custom", "face", "shapeValueFace", 48]
 ear_angle_z = ["Custom", "face", "shapeValueFace", 49]
 upper_ear_shape = ["Custom", "face", "shapeValueFace", 50]
 lower_ear_shape = ["Custom", "face", "shapeValueFace", 51]
-head_size = ["Custom", "body", "shapeValueBody", 1]     # head size would normally be in bodysliders, but I'd expect it to also change when saying "change this character's face"
+head_size = ["Custom", "body", "shapeValueBody", 1]     # head size would normally be in bodysliders
+                                                        # but I think it makes more sense to also
+                                                        # change the head size when creating or
+                                                        # altering a face
 
 
 list_faceslider = [face_width, upper_face_depth, upper_face_height, upper_face_size, lower_face_depth, lower_face_width, lower_jaw_vertical_position, lower_jaw_depth,
@@ -64,7 +67,7 @@ list_faceslider = [face_width, upper_face_depth, upper_face_height, upper_face_s
                    eye_width, inner_eye_corner_height, outer_eye_corner_height, nose_tip_height, nose_vertical_position, nose_ridge_height, mouth_vertical_position, mouth_width,
                    mouth_depth, upper_lip_depth, lower_lip_depth, mouth_corner_shape, ear_size, ear_angle_y, ear_angle_z, upper_ear_shape, lower_ear_shape, head_size]
 
-# Bodysliders --------------------------------------------------------------------------------------------
+# Bodysliders
 body_height = ["Custom", "body", "shapeValueBody", 0]
 neck_width = ["Custom", "body", "shapeValueBody", 2]
 neck_thickness = ["Custom", "body", "shapeValueBody", 3]
@@ -119,12 +122,12 @@ list_bodyslider = [body_height, neck_width, neck_thickness, breast_size, breast_
                    ankle_thickness, arms_shoulder_width, arms_shoulder_thickness, upper_arm_width, upper_arm_thickness, elbow_width, elbow_thickness, forearm_thickness, 
                    breast_softness, breast_weight]
 
-# --------------------------------------------------------------------------------------------------------
+
 def getv(c, path):
     """ get value """
     return reduce(lambda c, key: c[key] if isinstance(c, dict) else c[key], path, c)
 
-# --------------------------------------------------------------------------------------------------------
+
 def setv(c, path, value):
     """ set value """
     target = reduce(lambda c, key: c[key] if isinstance(c, dict) else c[key], path[:-1], c)

@@ -3,13 +3,14 @@
 from kkloader import KoikatuCharaData
 
 class Mother():
+    """ class for accessing all values of a female card """
     def __init__(self, mother):
         if isinstance(mother, str):
             self.mother = KoikatuCharaData.load(mother)
         else:
             raise TypeError("passed mother file is not of type String (should just be filename)")
 
-        # Facesliders ------------------------------------------------------------------------------------
+        # Facesliders
         self.face_width = self.mother["Custom"]["face"]["shapeValueFace"][0]
         self.upper_face_depth = self.mother["Custom"]["face"]["shapeValueFace"][1]
         self.upper_face_height = self.mother["Custom"]["face"]["shapeValueFace"][2]
@@ -76,7 +77,7 @@ class Mother():
                                 self.mouth_width, self.mouth_depth, self.upper_lip_depth, self.lower_lip_depth, self.mouth_corner_shape, 
                                 self.ear_size, self.ear_angle_y, self.ear_angle_z, self.upper_ear_shape, self.lower_ear_shape, self.head_size]
         
-        # Bodysliders ------------------------------------------------------------------------------------
+        # Bodysliders
         self.body_height = self.mother["Custom"]["body"]["shapeValueBody"][0]
         self.neck_width = self.mother["Custom"]["body"]["shapeValueBody"][2]
         self.neck_thickness = self.mother["Custom"]["body"]["shapeValueBody"][3]

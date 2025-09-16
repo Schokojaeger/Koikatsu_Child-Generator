@@ -1,12 +1,11 @@
-""" base class for character creation/manipulation.
-    This is supposed to make accessing members of cards easier """
+""" base class for character creation/manipulation """
 
 import copy
 import random
 from kkloader import KoikatuCharaData
-import _globals as _g
-from mother import Mother
-from father import Father
+from koikatsu_child_generator import constants
+from koikatsu_child_generator.mother import Mother
+from koikatsu_child_generator.father import Father
 
 
 class Child:
@@ -67,9 +66,9 @@ class Child:
 
         # loop through facesliders and modify all values to a random degree
         # (currently 50% up or down from base)
-        for i in _g.list_faceslider:
-            currm = _g.getv(self.mother, i)
-            currf = _g.getv(self.father, i)
+        for i in constants.list_faceslider:
+            currm = constants.getv(self.mother, i)
+            currf = constants.getv(self.father, i)
             if currm == 0.0:
                 continue
             middle_value = (currm + currf) / 2
@@ -78,11 +77,11 @@ class Child:
             # item really is the head size
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][1]:
                 newitem = self.modify_value(middle_value, 0.2)
-                _g.setv(self.child, i, newitem)
+                constants.setv(self.child, i, newitem)
             else:
                 newitem = self.modify_value(middle_value, 0.5)
                 # set resulting value as corresponding faceslider value of child
-                _g.setv(self.child, i, newitem)
+                constants.setv(self.child, i, newitem)
 
         # Inherit nose from parents
         nose_options = (self.mother["Custom"]["face"]["noseId"],
@@ -142,9 +141,9 @@ class Child:
         """ take bodyslider values of parent characters, modify and save as child bodysliders """
 
         # loop through bodysliders and modify all values to a random degree
-        for i in _g.list_bodyslider:
-            currm = _g.getv(self.mother, i)
-            currf = _g.getv(self.father, i)
+        for i in constants.list_bodyslider:
+            currm = constants.getv(self.mother, i)
+            currf = constants.getv(self.father, i)
             if currm == 0.0:
                 continue
             # changing the randomization of breast size
@@ -153,30 +152,30 @@ class Child:
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][4]:
                 if not gender:
                     # for male children, breast size is irrelevant
-                    _g.setv(self.child, i, 0) # TODO check if 0 is actually correct for males
+                    constants.setv(self.child, i, 0) # TODO check if 0 is actually correct for males
                     print("Male: No Boobs")
                     continue
                 # using a modifier of 50% to not always get basically the same size as the mother
                 newitem = self.modify_value(currm, 0.5)
                 print("Boobs", newitem)
-                _g.setv(self.child, i, newitem)
+                constants.setv(self.child, i, newitem)
                 continue
             # changing the randomization of butt angle (can get really fucked up)
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][27]:
                 # For male children, butt size will be determined by the father's
                 if not gender:
                     newitem = self.modify_value(currf, 0.15)
-                    _g.setv(self.child, i, newitem)
+                    constants.setv(self.child, i, newitem)
                     continue
                 # Using the mother's butt size for female children
                 newitem = self.modify_value(currm, 0.15)
-                _g.setv(self.child, i, newitem)
+                constants.setv(self.child, i, newitem)
                 continue
 
             middle_value = (currm + currf) / 2
             newitem = self.modify_value(middle_value, 0.3)
             # set resulting value as corresponding bodyslider value of child
-            _g.setv(self.child, i, newitem)
+            constants.setv(self.child, i, newitem)
 
     # ---------------------------------------------------------------------------------------------
     # Parameter "gender": True == Female, False == Male
