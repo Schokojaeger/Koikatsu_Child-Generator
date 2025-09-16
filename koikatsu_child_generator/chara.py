@@ -49,7 +49,7 @@ class Child:
                 i["type"] = 0
             c += 1
 
-    # ---------------------------------------------------------------------------------------------
+
     def modify_value(self, base_value, percentage_change) -> float:
         """ change current value randomly within a certain range """
         min_value = base_value - (base_value * percentage_change)
@@ -60,7 +60,8 @@ class Child:
 
         return new_value
 
-    # ---------------------------------------------------------------------------------------------
+    # inherit_face() does not need a gender boolean. The face will be put together from both
+    # parents in the same way, regardless of gender
     def inherit_face(self) -> None:
         """ take faceslider values of parent characters, modify and save as child facesliders """
 
@@ -135,7 +136,7 @@ class Child:
         self.child["Custom"]["face"]["baseMakeup"]["paintId"][0] = 0
         self.child["Custom"]["face"]["baseMakeup"]["paintId"][1] = 0
 
-    # ---------------------------------------------------------------------------------------------
+
     # Parameter "gender": True == Female, False == Male
     def inherit_body(self, gender: bool) -> None:
         """ take bodyslider values of parent characters, modify and save as child bodysliders """
@@ -177,9 +178,10 @@ class Child:
             # set resulting value as corresponding bodyslider value of child
             constants.setv(self.child, i, newitem)
 
-    # ---------------------------------------------------------------------------------------------
+
     # Parameter "gender": True == Female, False == Male
-    # TODO add functionality for male children
+    # TODO add functionality for male children, mainly look for all hairstyles
+    # associated with male characters
     def inherit_hair(self, gender: bool) -> None:
         """ use either mother's or father's haircolor (or in combination)
             to determine the child's hair color. Will also choose random
@@ -206,7 +208,7 @@ class Child:
         # I can set the hair to whatever I want
 
         # Empty several KKEx attributes that can potentially fuck up a new character
-        # TODO if any new ones appear that concern hair, add them here
+        # NOTE if any new ones appear that concern hair, add them here
         try:
             del self.child["KKEx"]["com.deathweasel.bepinex.hairaccessorycustomizer"][1]
         except KeyError:
@@ -318,9 +320,9 @@ class Child:
         self.child["Custom"]["face"]["eyebrowColor"] = (self.child["Custom"]["hair"]
                                                         ["parts"][0]["baseColor"])
 
-    # ---------------------------------------------------------------------------------------------
+
     # Parameter "gender": True == Female, False == Male
-    def inherit_eyes(self, gender: bool):
+    def inherit_eyes(self, gender: bool) -> None:
         """ inherit eyes in a (somewhat) believable way """
 
         # Sclera will be inherited from either one of the parents
@@ -454,8 +456,9 @@ class Child:
         self.child["Custom"]["face"]["foregroundEyes"] = 1
         self.child["Custom"]["face"]["foregroundEyebrow"] = 1
 
-    # ---------------------------------------------------------------------------------------------
-    def save(self):
-        """ call .save() method of KoikatuCharaData with desired output name """
 
+    def save(self) -> None:
+        """ save created character as a new card """
+
+        # calls the 'save()' method of KoikatuCharaData
         self.child.save(f"./{self.output_name}.png")

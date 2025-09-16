@@ -131,6 +131,6 @@ class Father():
                                self.ankle_thickness, self.arms_shoulder_width, self.arms_shoulder_thickness, self.upper_arm_width, self.upper_arm_thickness, self.elbow_width, self.elbow_thickness, self.forearm_thickness, 
                                self.breast_softness, self.breast_weight]
 
-    def save(self, name):
+    def save(self, name) -> None:
         """ call .save method of KoikatuCharaData with chosen output name """
         self.father.save(f"./{name}.png")
