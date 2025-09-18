@@ -1,15 +1,9 @@
 """ test class for creating new characters """
 
-#import random
-#import copy
-from koikatsu_child_generator import chara
-#from kkloader import KoikatuCharaData
-#from functools import reduce
-#import koikatsu_child_generator.constants as constants
+from koikatsu_child_generator.chara import Child
 
-child = chara.Child(mother="", father="", output_name="new_child")
-child.inherit_face()
-child.inherit_body(True)
-child.inherit_hair(True)
-child.inherit_eyes(True)
-child.save()
+
+child = Child(mother="", father="", output_name="new_child")
+child.create_child(True)
+#child.create_child(False)
+#child.create_random_child()

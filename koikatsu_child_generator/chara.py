@@ -322,7 +322,7 @@ class Child:
 
 
     # Parameter "gender": True == Female, False == Male
-    def inherit_eyes(self, gender: bool) -> None:
+    def inherit_eyes(self, gender: bool) -> None:   # TODO check if gender is really relevant here, so what if a male gets heart eyes?
         """ inherit eyes in a (somewhat) believable way """
 
         # Sclera will be inherited from either one of the parents
@@ -455,6 +455,42 @@ class Child:
         # Set Eyes and Eyebrows to not show through hair
         self.child["Custom"]["face"]["foregroundEyes"] = 1
         self.child["Custom"]["face"]["foregroundEyebrow"] = 1
+
+
+    def create_child(self, gender: bool) -> None:
+        """ create a new character with specified gender """
+
+        if gender:
+            print("Creating female character...")
+        else:
+            print("Creating male character...")
+
+            self.inherit_face()
+            self.inherit_hair(gender)
+            self.inherit_body(gender)
+            self.inherit_eyes(gender)     # TODO if gender no longer required, remove this bool
+            self.save()
+            print("Done!")
+
+
+    def create_random_child(self) -> None:
+        """ create character with random gender """
+
+        gender = random.choice([True, False])
+
+        if gender:
+            print("Creating female character...")
+        else:
+            print("Creating male character...")
+
+        self.inherit_face()
+        self.inherit_hair(gender)
+        self.inherit_body(gender)
+        self.inherit_eyes(gender)           # TODO if gender no longer required, remove this bool
+        self.save()
+        print("Done!")
+
+
 
 
     def save(self) -> None:
