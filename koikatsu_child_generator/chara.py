@@ -32,8 +32,10 @@ class Child:
         self.child.header = "【KoiKatuChara】".encode("utf-8")
         self.child.version = "0.0.0".encode("ascii")
         self.child.blockdata = copy.deepcopy(self.mother.blockdata)
-        if hasattr(self.mother, "KKEx"):
-            self.child["KKEx"] = copy.deepcopy(self.mother["KKEx"])
+        # TODO try moving the block below to the specific methods to use the correct KKEx
+        #      for the respective gender
+        # if hasattr(self.mother, "KKEx"):
+        #     self.child["KKEx"] = copy.deepcopy(self.mother["KKEx"])
         self.child["Custom"] = copy.deepcopy(self.mother["Custom"])
         self.child["Coordinate"] = copy.deepcopy(self.mother["Coordinate"])
         self.child["Parameter"] = copy.deepcopy(self.mother["Parameter"])
@@ -57,6 +59,9 @@ class Child:
         new_value = random.uniform(min_value, max_value)
         # TODO add minimum and maximum values here for the sliders
         # or you'll get very ugly integer overflows
+        # e.g. both have the maximum value or minimum value for sliders, it
+        # could modify the value upwards, which would result in a very
+        # low slider value
 
         return new_value
 
@@ -70,8 +75,8 @@ class Child:
         for i in constants.list_faceslider:
             currm = constants.getv(self.mother, i)
             currf = constants.getv(self.father, i)
-            if currm == 0.0:
-                continue
+            if currm == 0.0 and currf == 0.0:       # TODO test this with 0 values, non-zero values
+                continue                            # and alternating (currm == 0 but currf != 0)
             middle_value = (currm + currf) / 2
             # changing the randomization of head size to 20% (can get pretty fucked)
             # we only use the mother's head size here to determine if the current
@@ -97,12 +102,14 @@ class Child:
         # Set Lip Line Type to either inherit from parents or 0
         lipline_options = (self.mother["Custom"]["face"]["lipLineId"],
                            self.father["Custom"]["face"]["lipLineId"], 0)
+
         self.child["Custom"]["face"]["lipLineId"] = random.choice(lipline_options)
+
         if self.child["Custom"]["face"]["lipLineId"] == self.mother["Custom"]["face"]["lipLineId"]:
             print("Lip Line: Mother")
+
         elif (self.child["Custom"]["face"]["lipLineId"] ==
               self.father["Custom"]["face"]["lipLineId"]):
-
             print("Lip Line: Father")
 
         elif self.child["Custom"]["face"]["lipLineId"] == 0:
@@ -115,14 +122,17 @@ class Child:
                         self.mother["Custom"]["face"]["moleId"], 0)
         # Set mole for child
         self.child["Custom"]["face"]["moleId"] = random.choice(mole_options)
+
         if self.child["Custom"]["face"]["moleId"] == self.mother["Custom"]["face"]["moleId"]:
             self.child["Custom"]["face"]["moleColor"] = self.mother["Custom"]["face"]["moleColor"]
             self.child["Custom"]["face"]["moleLayout"] = self.mother["Custom"]["face"]["moleLayout"]
             print("Mole: Mother")
+
         elif self.child["Custom"]["face"]["moleId"] == self.father["Custom"]["face"]["moleId"]:
             self.child["Custom"]["face"]["moleColor"] = self.father["Custom"]["face"]["moleColor"]
             self.child["Custom"]["face"]["moleLayout"] = self.father["Custom"]["face"]["moleLayout"]
             print("Mole: Father")
+
         elif self.child["Custom"]["face"]["moleId"] == 0:
             print("Mole: None")
 
@@ -145,7 +155,7 @@ class Child:
         for i in constants.list_bodyslider:
             currm = constants.getv(self.mother, i)
             currf = constants.getv(self.father, i)
-            if currm == 0.0:
+            if currm == 0.0 and currf == 0.0:       # TODO test this check
                 continue
             # changing the randomization of breast size
             # Using the mother's breast size since using a middle value of both parents would likely
@@ -153,7 +163,7 @@ class Child:
             if currm == self.mother["Custom"]["body"]["shapeValueBody"][4]:
                 if not gender:
                     # for male children, breast size is irrelevant
-                    constants.setv(self.child, i, 0) # TODO check if 0 is actually correct for males
+                    constants.setv(self.child, i, 0) # TODO check if 0 is actually correct for males, perhaps use 'currf' instead
                     print("Male: No Boobs")
                     continue
                 # using a modifier of 50% to not always get basically the same size as the mother
@@ -184,10 +194,10 @@ class Child:
     # associated with male characters
     def inherit_hair(self, gender: bool) -> None:
         """ use either mother's or father's haircolor (or in combination)
-            to determine the child's hair color. Will also choose random
+            to determine the child's hair color and choose random
             hair options from the vanilla selection """
 
-        # Vanilla Hairstyles for Back Hair
+        # Vanilla female hairstyles for Back Hair
         # TODO add male hair selection
         # For some reason, the vanilla back hairstyles end at 58 and pick back up at 200?????
         back_hair_options = list(range(0, 59)) + list(range(200, 210))
@@ -195,7 +205,7 @@ class Child:
         self.child["Custom"]["hair"]["parts"][0]["id"] = random.choice(back_hair_options)
         print("Back Hair ID: " , self.child["Custom"]["hair"]["parts"][0]["id"])
 
-        # Vanilla Hairstyles for Front Hair
+        # Vanilla female hairstyles for Front Hair
         # And here, the vanilla hairstyles end at 20, pick back up at 70, stop again,
         # and then start again at 200?????
         front_hair_options = list(range(1, 21)) + list(range(31, 71)) + list(range(200, 210))
@@ -221,6 +231,7 @@ class Child:
         except KeyError:
             pass
 
+        # reverse loop through the info block of a card to delete all instances of custom hair
         try:
             counter = -1
             for _ in self.child["KKEx"]["com.bepis.sideloader.universalautoresolver"][1]["info"]:
@@ -307,14 +318,14 @@ class Child:
                                                                  ["parts"][0]["baseColor"])
         self.child["Custom"]["hair"]["parts"][2]["startColor"] = random.choice(color_options)
         self.child["Custom"]["hair"]["parts"][2]["endColor"] = random.choice(color_options)
-        #insert accessory color here
+        # TODO insert accessory color here
 
         # Extension Color
         self.child["Custom"]["hair"]["parts"][3]["baseColor"] = (self.child["Custom"]["hair"]
                                                                  ["parts"][0]["baseColor"])
         self.child["Custom"]["hair"]["parts"][3]["startColor"] = random.choice(color_options)
         self.child["Custom"]["hair"]["parts"][3]["endColor"] = random.choice(color_options)
-        #insert accessory color here
+        # TODO insert accessory color here
 
         # Eyebrow Color
         self.child["Custom"]["face"]["eyebrowColor"] = (self.child["Custom"]["hair"]
@@ -322,7 +333,7 @@ class Child:
 
 
     # Parameter "gender": True == Female, False == Male
-    def inherit_eyes(self, gender: bool) -> None:   # TODO check if gender is really relevant here, so what if a male gets heart eyes?
+    def inherit_eyes(self, gender: bool) -> None:
         """ inherit eyes in a (somewhat) believable way """
 
         # Sclera will be inherited from either one of the parents
@@ -371,22 +382,22 @@ class Child:
         if (self.child["Custom"]["face"]["pupil"][0]["baseColor"] ==
             self.father["Custom"]["face"]["pupil"][0]["baseColor"]):
 
-            print("Base Color Father")
+            print("Pupil base color Father")
 
         elif (self.child["Custom"]["face"]["pupil"][0]["baseColor"] ==
               self.mother["Custom"]["face"]["pupil"][0]["baseColor"]):
 
-            print("Base Color Mother")
+            print("Pupil base color Mother")
 
         if (self.child["Custom"]["face"]["pupil"][0]["subColor"] ==
             self.father["Custom"]["face"]["pupil"][0]["subColor"]):
 
-            print("Sub Color Father")
+            print("Pupil sub color Father")
 
         elif (self.child["Custom"]["face"]["pupil"][0]["subColor"] ==
               self.mother["Custom"]["face"]["pupil"][0]["subColor"]):
 
-            print("Sub Color Mother")
+            print("Pupil sub color Mother")
 
         # Eye Gradient
         # Selection of Vanilla eye gradients
@@ -462,15 +473,19 @@ class Child:
 
         if gender:
             print("Creating female character...")
+            if hasattr(self.mother, "KKEx"):
+                self.child["KKEx"] = copy.deepcopy(self.mother["KKEx"])
         else:
             print("Creating male character...")
+            if hasattr(self.father, "KKEx"):
+                self.child["KKEx"] = copy.deepcopy(self.father["KKEx"])
 
-            self.inherit_face()
-            self.inherit_hair(gender)
-            self.inherit_body(gender)
-            self.inherit_eyes(gender)     # TODO if gender no longer required, remove this bool
-            self.save()
-            print("Done!")
+        self.inherit_face()
+        self.inherit_hair(gender)
+        self.inherit_body(gender)
+        self.inherit_eyes(gender)
+        self.save()
+        print("Done!")
 
 
     def create_random_child(self) -> None:
@@ -480,17 +495,19 @@ class Child:
 
         if gender:
             print("Creating female character...")
+            if hasattr(self.mother, "KKEx"):
+                self.child["KKEx"] = copy.deepcopy(self.mother["KKEx"])
         else:
             print("Creating male character...")
+            if hasattr(self.father, "KKEx"):
+                self.child["KKEx"] = copy.deepcopy(self.father["KKEx"])
 
         self.inherit_face()
         self.inherit_hair(gender)
         self.inherit_body(gender)
-        self.inherit_eyes(gender)           # TODO if gender no longer required, remove this bool
+        self.inherit_eyes(gender)
         self.save()
         print("Done!")
-
-
 
 
     def save(self) -> None:
