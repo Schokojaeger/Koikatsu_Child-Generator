@@ -20,15 +20,20 @@ class Child:
             raise TypeError("Parameter 'output_name' should be a string with "\
                             "the name the file should be called after creation")
 
-        self.motherc = Mother(f"./{mother}.png")
-        self.mother = KoikatuCharaData.load(f"./{mother}.png")
-        self.fatherc = Father(f"./{father}.png")
-        self.father = KoikatuCharaData.load(f"./{father}.png")
+        self.motherc = Mother(mother)
+        self.mother = KoikatuCharaData.load(mother)
+        self.fatherc = Father(father)
+        self.father = KoikatuCharaData.load(father)
 
         self.child = KoikatuCharaData()
-        # TODO add custom images instead of inherited ones
-        self.child.image = self.mother.image
-        self.child.face_image = self.mother.image
+
+        # Set default picture for the newly created character (insert path to another PNG
+        #   if you want a different one)
+        with open("child_pic.png", "rb") as f:
+            pic = f.read()
+
+        self.child.image = pic
+        self.child.face_image = pic
         self.child.product_no = 100
         self.child.header = "【KoiKatuChara】".encode("utf-8")
         self.child.version = "0.0.0".encode("ascii")
@@ -477,16 +482,13 @@ class Child:
         self.child["Custom"]["face"]["foregroundEyebrow"] = 1
 
 
-    def create(self, gender: bool) -> None:
+    def create(self, gender: bool = True) -> None:
         """ create a new character with specified gender """
 
         if gender:
             print("Creating female character...\n")
         else:
             print("Creating male character...\n")
-            # TODO add custom images instead of inherited ones
-            self.child.image = self.father.image
-            self.child.face_image = self.father.image
             self.child.product_no = 100
             self.child.header = "【KoiKatuChara】".encode("utf-8")
             self.child.version = "0.0.0".encode("ascii")
