@@ -1,136 +1,157 @@
+# pylint: disable=unused-variable
 """ class for mother character and its values """
 
+from dataclasses import dataclass
 from kkloader import KoikatuCharaData
 
+@dataclass(frozen=True)
 class Mother():
     """ class for accessing all values of a female card """
-    def __init__(self, mother):
-        if isinstance(mother, str):
-            self.mother = KoikatuCharaData.load(mother)
-        else:
-            raise TypeError("passed mother file is not of type String (should just be filename)")
+
+    mother: str
+
+    # pylint: disable-next=too-many-locals, too-many-statements
+    def __post__init__(self):
+        mother_data: KoikatuCharaData = KoikatuCharaData.load(self.mother)
 
         # Facesliders
-        self.face_width = self.mother["Custom"]["face"]["shapeValueFace"][0]
-        self.upper_face_depth = self.mother["Custom"]["face"]["shapeValueFace"][1]
-        self.upper_face_height = self.mother["Custom"]["face"]["shapeValueFace"][2]
-        self.upper_face_size = self.mother["Custom"]["face"]["shapeValueFace"][3]
-        self.lower_face_depth = self.mother["Custom"]["face"]["shapeValueFace"][4]
-        self.lower_face_width = self.mother["Custom"]["face"]["shapeValueFace"][5]
-        self.lower_jaw_vertical_position = self.mother["Custom"]["face"]["shapeValueFace"][6]
-        self.lower_jaw_depth = self.mother["Custom"]["face"]["shapeValueFace"][7]
-        self.jaw_vertical_position = self.mother["Custom"]["face"]["shapeValueFace"][8]
-        self.jaw_width = self.mother["Custom"]["face"]["shapeValueFace"][9]
-        self.jaw_depth = self.mother["Custom"]["face"]["shapeValueFace"][10]
-        self.chin_tip = self.mother["Custom"]["face"]["shapeValueFace"][11]
-        self.chin_depth = self.mother["Custom"]["face"]["shapeValueFace"][12]
-        self.chin_width = self.mother["Custom"]["face"]["shapeValueFace"][13]
-        self.cheekbone_width = self.mother["Custom"]["face"]["shapeValueFace"][14]
-        self.cheekbone_depth = self.mother["Custom"]["face"]["shapeValueFace"][15]
-        self.cheek_width = self.mother["Custom"]["face"]["shapeValueFace"][16]
-        self.cheek_depth = self.mother["Custom"]["face"]["shapeValueFace"][17]
-        self.cheek_vertical_position = self.mother["Custom"]["face"]["shapeValueFace"][18]
-        self.eyebrow_vertical_position = self.mother["Custom"]["face"]["shapeValueFace"][19]
-        self.eyebrow_spacing = self.mother["Custom"]["face"]["shapeValueFace"][20]
-        self.eyebrow_angle = self.mother["Custom"]["face"]["shapeValueFace"][21]
-        self.inner_eyebrow_shape = self.mother["Custom"]["face"]["shapeValueFace"][22]
-        self.outer_eyebrow_shape = self.mother["Custom"]["face"]["shapeValueFace"][23]
-        self.upper_eyelid_shape1 = self.mother["Custom"]["face"]["shapeValueFace"][24]
-        self.upper_eyelid_shape2 = self.mother["Custom"]["face"]["shapeValueFace"][25]
-        self.upper_eyelid_shape3 = self.mother["Custom"]["face"]["shapeValueFace"][26]
-        self.lower_eyelid_shape1 = self.mother["Custom"]["face"]["shapeValueFace"][27]
-        self.lower_eyelid_shape2 = self.mother["Custom"]["face"]["shapeValueFace"][28]
-        self.lower_eyelid_shape3 = self.mother["Custom"]["face"]["shapeValueFace"][29]
-        self.eye_vertical_position = self.mother["Custom"]["face"]["shapeValueFace"][30]
-        self.eye_spacing = self.mother["Custom"]["face"]["shapeValueFace"][31]
-        self.eye_depth = self.mother["Custom"]["face"]["shapeValueFace"][32]
-        self.eye_rotation = self.mother["Custom"]["face"]["shapeValueFace"][33]
-        self.eye_height = self.mother["Custom"]["face"]["shapeValueFace"][34]
-        self.eye_width = self.mother["Custom"]["face"]["shapeValueFace"][35]
-        self.inner_eye_corner_height = self.mother["Custom"]["face"]["shapeValueFace"][36]
-        self.outer_eye_corner_height = self.mother["Custom"]["face"]["shapeValueFace"][37]
-        self.nose_tip_height = self.mother["Custom"]["face"]["shapeValueFace"][38]
-        self.nose_vertical_position = self.mother["Custom"]["face"]["shapeValueFace"][39]
-        self.nose_ridge_height = self.mother["Custom"]["face"]["shapeValueFace"][40]
-        self.mouth_vertical_position = self.mother["Custom"]["face"]["shapeValueFace"][41]
-        self.mouth_width = self.mother["Custom"]["face"]["shapeValueFace"][42]
-        self.mouth_depth = self.mother["Custom"]["face"]["shapeValueFace"][43]
-        self.upper_lip_depth = self.mother["Custom"]["face"]["shapeValueFace"][44]
-        self.lower_lip_depth = self.mother["Custom"]["face"]["shapeValueFace"][45]
-        self.mouth_corner_shape = self.mother["Custom"]["face"]["shapeValueFace"][46]
-        self.ear_size = self.mother["Custom"]["face"]["shapeValueFace"][47]
-        self.ear_angle_y = self.mother["Custom"]["face"]["shapeValueFace"][48]
-        self.ear_angle_z = self.mother["Custom"]["face"]["shapeValueFace"][49]
-        self.upper_ear_shape = self.mother["Custom"]["face"]["shapeValueFace"][50]
-        self.lower_ear_shape = self.mother["Custom"]["face"]["shapeValueFace"][51]
-        self.head_size = self.mother["Custom"]["body"]["shapeValueBody"][1]
+        face_width = mother_data["Custom"]["face"]["shapeValueFace"][0]
+        upper_face_depth = mother_data["Custom"]["face"]["shapeValueFace"][1]
+        upper_face_height = mother_data["Custom"]["face"]["shapeValueFace"][2]
+        upper_face_size = mother_data["Custom"]["face"]["shapeValueFace"][3]
+        lower_face_depth = mother_data["Custom"]["face"]["shapeValueFace"][4]
+        lower_face_width = mother_data["Custom"]["face"]["shapeValueFace"][5]
+        lower_jaw_vertical_position = mother_data["Custom"]["face"]["shapeValueFace"][6]
+        lower_jaw_depth = mother_data["Custom"]["face"]["shapeValueFace"][7]
+        jaw_vertical_position = mother_data["Custom"]["face"]["shapeValueFace"][8]
+        jaw_width = mother_data["Custom"]["face"]["shapeValueFace"][9]
+        jaw_depth = mother_data["Custom"]["face"]["shapeValueFace"][10]
+        chin_tip = mother_data["Custom"]["face"]["shapeValueFace"][11]
+        chin_depth = mother_data["Custom"]["face"]["shapeValueFace"][12]
+        chin_width = mother_data["Custom"]["face"]["shapeValueFace"][13]
+        cheekbone_width = mother_data["Custom"]["face"]["shapeValueFace"][14]
+        cheekbone_depth = mother_data["Custom"]["face"]["shapeValueFace"][15]
+        cheek_width = mother_data["Custom"]["face"]["shapeValueFace"][16]
+        cheek_depth = mother_data["Custom"]["face"]["shapeValueFace"][17]
+        cheek_vertical_position = mother_data["Custom"]["face"]["shapeValueFace"][18]
+        eyebrow_vertical_position = mother_data["Custom"]["face"]["shapeValueFace"][19]
+        eyebrow_spacing = mother_data["Custom"]["face"]["shapeValueFace"][20]
+        eyebrow_angle = mother_data["Custom"]["face"]["shapeValueFace"][21]
+        inner_eyebrow_shape = mother_data["Custom"]["face"]["shapeValueFace"][22]
+        outer_eyebrow_shape = mother_data["Custom"]["face"]["shapeValueFace"][23]
+        upper_eyelid_shape1 = mother_data["Custom"]["face"]["shapeValueFace"][24]
+        upper_eyelid_shape2 = mother_data["Custom"]["face"]["shapeValueFace"][25]
+        upper_eyelid_shape3 = mother_data["Custom"]["face"]["shapeValueFace"][26]
+        lower_eyelid_shape1 = mother_data["Custom"]["face"]["shapeValueFace"][27]
+        lower_eyelid_shape2 = mother_data["Custom"]["face"]["shapeValueFace"][28]
+        lower_eyelid_shape3 = mother_data["Custom"]["face"]["shapeValueFace"][29]
+        eye_vertical_position = mother_data["Custom"]["face"]["shapeValueFace"][30]
+        eye_spacing = mother_data["Custom"]["face"]["shapeValueFace"][31]
+        eye_depth = mother_data["Custom"]["face"]["shapeValueFace"][32]
+        eye_rotation = mother_data["Custom"]["face"]["shapeValueFace"][33]
+        eye_height = mother_data["Custom"]["face"]["shapeValueFace"][34]
+        eye_width = mother_data["Custom"]["face"]["shapeValueFace"][35]
+        inner_eye_corner_height = mother_data["Custom"]["face"]["shapeValueFace"][36]
+        outer_eye_corner_height = mother_data["Custom"]["face"]["shapeValueFace"][37]
+        nose_tip_height = mother_data["Custom"]["face"]["shapeValueFace"][38]
+        nose_vertical_position = mother_data["Custom"]["face"]["shapeValueFace"][39]
+        nose_ridge_height = mother_data["Custom"]["face"]["shapeValueFace"][40]
+        mouth_vertical_position = mother_data["Custom"]["face"]["shapeValueFace"][41]
+        mouth_width = mother_data["Custom"]["face"]["shapeValueFace"][42]
+        mouth_depth = mother_data["Custom"]["face"]["shapeValueFace"][43]
+        upper_lip_depth = mother_data["Custom"]["face"]["shapeValueFace"][44]
+        lower_lip_depth = mother_data["Custom"]["face"]["shapeValueFace"][45]
+        mouth_corner_shape = mother_data["Custom"]["face"]["shapeValueFace"][46]
+        ear_size = mother_data["Custom"]["face"]["shapeValueFace"][47]
+        ear_angle_y = mother_data["Custom"]["face"]["shapeValueFace"][48]
+        ear_angle_z = mother_data["Custom"]["face"]["shapeValueFace"][49]
+        upper_ear_shape = mother_data["Custom"]["face"]["shapeValueFace"][50]
+        lower_ear_shape = mother_data["Custom"]["face"]["shapeValueFace"][51]
+        head_size = mother_data["Custom"]["body"]["shapeValueBody"][1]
 
-        self.list_faceslider = [self.face_width, self.upper_face_depth, self.upper_face_height, self.upper_face_size, self.lower_face_depth, 
-                                self.lower_face_width, self.lower_jaw_vertical_position, self.lower_jaw_depth, self.jaw_vertical_position, 
-                                self.jaw_width, self.jaw_depth, self.chin_tip, self.chin_depth, self.chin_width, self.cheekbone_width, 
-                                self.cheekbone_depth, self.cheek_width, self.cheek_depth, self.cheek_vertical_position, self.eyebrow_vertical_position, 
-                                self.eyebrow_spacing, self.eyebrow_angle, self.inner_eyebrow_shape, self.outer_eyebrow_shape, self.upper_eyelid_shape1, 
-                                self.upper_eyelid_shape2, self.upper_eyelid_shape3, self.lower_eyelid_shape1, self.lower_eyelid_shape2, 
-                                self.lower_eyelid_shape3, self.eye_vertical_position, self.eye_spacing, self.eye_depth, self.eye_rotation, 
-                                self.eye_height, self.eye_width, self.inner_eye_corner_height, self.outer_eye_corner_height, 
-                                self.nose_tip_height, self.nose_vertical_position, self.nose_ridge_height, self.mouth_vertical_position, 
-                                self.mouth_width, self.mouth_depth, self.upper_lip_depth, self.lower_lip_depth, self.mouth_corner_shape, 
-                                self.ear_size, self.ear_angle_y, self.ear_angle_z, self.upper_ear_shape, self.lower_ear_shape, self.head_size]
-        
+        list_faceslider = [
+                                face_width, upper_face_depth, upper_face_height, upper_face_size,
+                                lower_face_depth, lower_face_width, lower_jaw_vertical_position,
+                                lower_jaw_depth, jaw_vertical_position, jaw_width, jaw_depth,
+                                chin_tip, chin_depth, chin_width, cheekbone_width, cheekbone_depth,
+                                cheek_width, cheek_depth, cheek_vertical_position,
+                                eyebrow_vertical_position, eyebrow_spacing, eyebrow_angle,
+                                inner_eyebrow_shape, outer_eyebrow_shape, upper_eyelid_shape1,
+                                upper_eyelid_shape2, upper_eyelid_shape3, lower_eyelid_shape1,
+                                lower_eyelid_shape2, lower_eyelid_shape3, eye_vertical_position,
+                                eye_spacing, eye_depth, eye_rotation, eye_height, eye_width,
+                                inner_eye_corner_height, outer_eye_corner_height, nose_tip_height,
+                                nose_vertical_position, nose_ridge_height, mouth_vertical_position,
+                                mouth_width, mouth_depth, upper_lip_depth, lower_lip_depth,
+                                mouth_corner_shape, ear_size, ear_angle_y, ear_angle_z,
+                                upper_ear_shape, lower_ear_shape, head_size
+                        ]
+
         # Bodysliders
-        self.body_height = self.mother["Custom"]["body"]["shapeValueBody"][0]
-        self.neck_width = self.mother["Custom"]["body"]["shapeValueBody"][2]
-        self.neck_thickness = self.mother["Custom"]["body"]["shapeValueBody"][3]
-        self.breast_size = self.mother["Custom"]["body"]["shapeValueBody"][4]
-        self.breast_vertical_position = self.mother["Custom"]["body"]["shapeValueBody"][5]
-        self.breast_spacing = self.mother["Custom"]["body"]["shapeValueBody"][6]
-        self.breast_horizontal_position = self.mother["Custom"]["body"]["shapeValueBody"][7]
-        self.breast_vertical_angle = self.mother["Custom"]["body"]["shapeValueBody"][8]
-        self.breast_depth = self.mother["Custom"]["body"]["shapeValueBody"][9]
-        self.breast_roundness = self.mother["Custom"]["body"]["shapeValueBody"][10]
-        self.areola_depth = self.mother["Custom"]["body"]["shapeValueBody"][11]
-        self.nipple_thickness = self.mother["Custom"]["body"]["shapeValueBody"][12]
-        self.nipple_depth = self.mother["Custom"]["body"]["shapeValueBody"][13]
-        self.upper_body_shoulder_width = self.mother["Custom"]["body"]["shapeValueBody"][14]
-        self.upper_body_shoulder_thickness = self.mother["Custom"]["body"]["shapeValueBody"][15]
-        self.upper_torso_width = self.mother["Custom"]["body"]["shapeValueBody"][16]
-        self.upper_torso_thickness = self.mother["Custom"]["body"]["shapeValueBody"][17]
-        self.lower_torso_width = self.mother["Custom"]["body"]["shapeValueBody"][18]
-        self.lower_torso_thickness = self.mother["Custom"]["body"]["shapeValueBody"][19]
-        self.waist_position = self.mother["Custom"]["body"]["shapeValueBody"][20]
-        self.belly_thickness = self.mother["Custom"]["body"]["shapeValueBody"][21]
-        self.waist_width = self.mother["Custom"]["body"]["shapeValueBody"][22]
-        self.waist_thickness = self.mother["Custom"]["body"]["shapeValueBody"][23]
-        self.hip_width = self.mother["Custom"]["body"]["shapeValueBody"][24]
-        self.hip_width_2 = self.mother["Custom"]["body"]["shapeValueBody"][25]
-        self.butt_size = self.mother["Custom"]["body"]["shapeValueBody"][26]
-        self.butt_angle = self.mother["Custom"]["body"]["shapeValueBody"][27]
-        self.upper_thigh_width = self.mother["Custom"]["body"]["shapeValueBody"][28]
-        self.upper_thigh_thickness = self.mother["Custom"]["body"]["shapeValueBody"][29]
-        self.lower_thigh_width = self.mother["Custom"]["body"]["shapeValueBody"][30]
-        self.lower_thigh_thickness = self.mother["Custom"]["body"]["shapeValueBody"][31]
-        self.knee_width = self.mother["Custom"]["body"]["shapeValueBody"][32]
-        self.knee_thickness = self.mother["Custom"]["body"]["shapeValueBody"][33]
-        self.calves = self.mother["Custom"]["body"]["shapeValueBody"][34]
-        self.ankle_width = self.mother["Custom"]["body"]["shapeValueBody"][35]
-        self.ankle_thickness = self.mother["Custom"]["body"]["shapeValueBody"][36]
-        self.arms_shoulder_width = self.mother["Custom"]["body"]["shapeValueBody"][37]
-        self.arms_shoulder_thickness = self.mother["Custom"]["body"]["shapeValueBody"][38]
-        self.upper_arm_width = self.mother["Custom"]["body"]["shapeValueBody"][39]
-        self.upper_arm_thickness = self.mother["Custom"]["body"]["shapeValueBody"][40]
-        self.elbow_width = self.mother["Custom"]["body"]["shapeValueBody"][41]
-        self.elbow_thickness = self.mother["Custom"]["body"]["shapeValueBody"][42]
-        self.forearm_thickness = self.mother["Custom"]["body"]["shapeValueBody"][40]
-        self.breast_softness = self.mother["Custom"]["body"]["bustSoftness"]
-        self.breast_weight = self.mother["Custom"]["body"]["bustWeight"]
+        body_height = mother_data["Custom"]["body"]["shapeValueBody"][0]
+        neck_width = mother_data["Custom"]["body"]["shapeValueBody"][2]
+        neck_thickness = mother_data["Custom"]["body"]["shapeValueBody"][3]
+        breast_size = mother_data["Custom"]["body"]["shapeValueBody"][4]
+        breast_vertical_position = mother_data["Custom"]["body"]["shapeValueBody"][5]
+        breast_spacing = mother_data["Custom"]["body"]["shapeValueBody"][6]
+        breast_horizontal_position = mother_data["Custom"]["body"]["shapeValueBody"][7]
+        breast_vertical_angle = mother_data["Custom"]["body"]["shapeValueBody"][8]
+        breast_depth = mother_data["Custom"]["body"]["shapeValueBody"][9]
+        breast_roundness = mother_data["Custom"]["body"]["shapeValueBody"][10]
+        areola_depth = mother_data["Custom"]["body"]["shapeValueBody"][11]
+        nipple_thickness = mother_data["Custom"]["body"]["shapeValueBody"][12]
+        nipple_depth = mother_data["Custom"]["body"]["shapeValueBody"][13]
+        upper_body_shoulder_width = mother_data["Custom"]["body"]["shapeValueBody"][14]
+        upper_body_shoulder_thickness = mother_data["Custom"]["body"]["shapeValueBody"][15]
+        upper_torso_width = mother_data["Custom"]["body"]["shapeValueBody"][16]
+        upper_torso_thickness = mother_data["Custom"]["body"]["shapeValueBody"][17]
+        lower_torso_width = mother_data["Custom"]["body"]["shapeValueBody"][18]
+        lower_torso_thickness = mother_data["Custom"]["body"]["shapeValueBody"][19]
+        waist_position = mother_data["Custom"]["body"]["shapeValueBody"][20]
+        belly_thickness = mother_data["Custom"]["body"]["shapeValueBody"][21]
+        waist_width = mother_data["Custom"]["body"]["shapeValueBody"][22]
+        waist_thickness = mother_data["Custom"]["body"]["shapeValueBody"][23]
+        hip_width = mother_data["Custom"]["body"]["shapeValueBody"][24]
+        hip_width_2 = mother_data["Custom"]["body"]["shapeValueBody"][25]
+        butt_size = mother_data["Custom"]["body"]["shapeValueBody"][26]
+        butt_angle = mother_data["Custom"]["body"]["shapeValueBody"][27]
+        upper_thigh_width = mother_data["Custom"]["body"]["shapeValueBody"][28]
+        upper_thigh_thickness = mother_data["Custom"]["body"]["shapeValueBody"][29]
+        lower_thigh_width = mother_data["Custom"]["body"]["shapeValueBody"][30]
+        lower_thigh_thickness = mother_data["Custom"]["body"]["shapeValueBody"][31]
+        knee_width = mother_data["Custom"]["body"]["shapeValueBody"][32]
+        knee_thickness = mother_data["Custom"]["body"]["shapeValueBody"][33]
+        calves = mother_data["Custom"]["body"]["shapeValueBody"][34]
+        ankle_width = mother_data["Custom"]["body"]["shapeValueBody"][35]
+        ankle_thickness = mother_data["Custom"]["body"]["shapeValueBody"][36]
+        arms_shoulder_width = mother_data["Custom"]["body"]["shapeValueBody"][37]
+        arms_shoulder_thickness = mother_data["Custom"]["body"]["shapeValueBody"][38]
+        upper_arm_width = mother_data["Custom"]["body"]["shapeValueBody"][39]
+        upper_arm_thickness = mother_data["Custom"]["body"]["shapeValueBody"][40]
+        elbow_width = mother_data["Custom"]["body"]["shapeValueBody"][41]
+        elbow_thickness = mother_data["Custom"]["body"]["shapeValueBody"][42]
+        forearm_thickness = mother_data["Custom"]["body"]["shapeValueBody"][40]
+        breast_softness = mother_data["Custom"]["body"]["bustSoftness"]
+        breast_weight = mother_data["Custom"]["body"]["bustWeight"]
 
-        self.list_bodyslider = [self.body_height, self.neck_width, self.neck_thickness, self.breast_size, self.breast_vertical_position, self.breast_spacing, self.breast_horizontal_position, self.breast_vertical_angle, 
-                               self.breast_depth, self.breast_roundness, self.areola_depth, self.nipple_thickness, self.nipple_depth, self.upper_body_shoulder_width, self.upper_body_shoulder_thickness, self.upper_torso_width, 
-                               self.upper_torso_thickness, self.lower_torso_width, self.lower_torso_thickness, self.waist_position, self.belly_thickness, self.waist_width, self.waist_thickness, self.hip_width, self.hip_width_2, 
-                               self.butt_size, self.butt_angle, self.upper_thigh_width, self.upper_thigh_thickness, self.lower_thigh_width, self.lower_thigh_thickness, self.knee_width, self.knee_thickness, self.calves, self.ankle_width, 
-                               self.ankle_thickness, self.arms_shoulder_width, self.arms_shoulder_thickness, self.upper_arm_width, self.upper_arm_thickness, self.elbow_width, self.elbow_thickness, self.forearm_thickness, 
-                               self.breast_softness, self.breast_weight]
+        list_bodyslider = [
+                               body_height, neck_width, neck_thickness, breast_size,
+                               breast_vertical_position, breast_spacing,
+                               breast_horizontal_position, breast_vertical_angle, breast_depth,
+                               breast_roundness, areola_depth, nipple_thickness, nipple_depth,
+                               upper_body_shoulder_width, upper_body_shoulder_thickness,
+                               upper_torso_width, upper_torso_thickness, lower_torso_width,
+                               lower_torso_thickness, waist_position, belly_thickness, waist_width,
+                               waist_thickness, hip_width, hip_width_2, butt_size, butt_angle,
+                               upper_thigh_width, upper_thigh_thickness, lower_thigh_width,
+                               lower_thigh_thickness, knee_width, knee_thickness, calves,
+                               ankle_width, ankle_thickness, arms_shoulder_width,
+                               arms_shoulder_thickness, upper_arm_width, upper_arm_thickness,
+                               elbow_width, elbow_thickness, forearm_thickness, breast_softness,
+                               breast_weight
+                        ]
 
     def save(self, name) -> None:
         """ call .save method of KoikatuCharaData with chosen output name """
-        self.mother.save(f"./{name}.png")
+        mother_data = getattr(self, "mother_data")
+        mother_data.save(f"./{name}.png")

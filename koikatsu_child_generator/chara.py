@@ -11,7 +11,7 @@ from koikatsu_child_generator.father import Father
 class Child:
     """ base class for creating children """
 
-    def __init__(self, mother, father, output_name):
+    def __init__(self, mother: str, father: str, output_name: str="new_child", debug: bool = False):
         if not isinstance(mother, str) and isinstance(father, str):
             raise TypeError("Both 'Mother' and 'Father' Files must be the "\
                             "filename of the corresponding .png file in String Format")
@@ -24,12 +24,13 @@ class Child:
         self.mother = KoikatuCharaData.load(mother)
         self.fatherc = Father(father)
         self.father = KoikatuCharaData.load(father)
+        self.debug = debug
 
         self.child = KoikatuCharaData()
 
         # Set default picture for the newly created character (insert path to another PNG
         #   if you want a different one)
-        with open("child_pic.png", "rb") as f:
+        with open("./resources/child_pic.png", "rb") as f:
             pic = f.read()
 
         self.child.image = pic
@@ -70,7 +71,7 @@ class Child:
 
     # inherit_face() does not need a gender boolean. The face will be put together from both
     #   parents in the same way, regardless of gender
-    def inherit_face(self) -> None:
+    def inherit_face(self, debug: bool = False) -> None:
         """ take faceslider values of parent characters, modify and save as child facesliders """
 
         # loop through facesliders and modify all values to a random degree
@@ -97,24 +98,27 @@ class Child:
                         self.father["Custom"]["face"]["noseId"])
 
         self.child["Custom"]["face"]["noseId"] = random.choice(nose_options)
-        if self.child["Custom"]["face"]["noseId"] == self.mother["Custom"]["face"]["noseId"]:
-            print("Nose: Mother")
-        else:
-            print("Nose: Father")
+        if debug:
+            if self.child["Custom"]["face"]["noseId"] == self.mother["Custom"]["face"]["noseId"]:
+                print("Nose: Mother")
+            else:
+                print("Nose: Father")
 
         # Set Lip Line Type to either inherit from parents or 0
         lipline_options = (self.mother["Custom"]["face"]["lipLineId"],
                            self.father["Custom"]["face"]["lipLineId"], 0)
         self.child["Custom"]["face"]["lipLineId"] = random.choice(lipline_options)
-        if self.child["Custom"]["face"]["lipLineId"] == self.mother["Custom"]["face"]["lipLineId"]:
-            print("Lip Line: Mother")
-        elif (self.child["Custom"]["face"]["lipLineId"] ==
-              self.father["Custom"]["face"]["lipLineId"]):
+        if debug:
+            if (self.child["Custom"]["face"]["lipLineId"]
+                == self.mother["Custom"]["face"]["lipLineId"]):
+                print("Lip Line: Mother")
+            elif (self.child["Custom"]["face"]["lipLineId"]
+                == self.father["Custom"]["face"]["lipLineId"]):
 
-            print("Lip Line: Father")
+                print("Lip Line: Father")
 
-        elif self.child["Custom"]["face"]["lipLineId"] == 0:
-            print("Lip Line: None")
+            elif self.child["Custom"]["face"]["lipLineId"] == 0:
+                print("Lip Line: None")
         # TODO set Lip Line color according to inherited skin color (Black Skin with
         #   white line could look really weird for example)
 
@@ -126,13 +130,16 @@ class Child:
         if self.child["Custom"]["face"]["moleId"] == self.mother["Custom"]["face"]["moleId"]:
             self.child["Custom"]["face"]["moleColor"] = self.mother["Custom"]["face"]["moleColor"]
             self.child["Custom"]["face"]["moleLayout"] = self.mother["Custom"]["face"]["moleLayout"]
-            print("Mole: Mother")
+            if debug:
+                print("Mole: Mother")
         elif self.child["Custom"]["face"]["moleId"] == self.father["Custom"]["face"]["moleId"]:
             self.child["Custom"]["face"]["moleColor"] = self.father["Custom"]["face"]["moleColor"]
             self.child["Custom"]["face"]["moleLayout"] = self.father["Custom"]["face"]["moleLayout"]
-            print("Mole: Father")
+            if debug:
+                print("Mole: Father")
         elif self.child["Custom"]["face"]["moleId"] == 0:
-            print("Mole: None")
+            if debug:
+                print("Mole: None")
 
         # Set all makeup to empty
         # NOTE Some vanilla options for various makeup can look a bit weird at times. So
@@ -146,7 +153,7 @@ class Child:
 
 
     # Parameter "gender": True == Female, False == Male
-    def inherit_body(self, gender: bool) -> None:
+    def inherit_body(self, gender: bool, debug: bool = False) -> None:
         """ take bodyslider values of parent characters, modify and save as child bodysliders """
 
         # loop through bodysliders and modify all values to a random degree
@@ -168,14 +175,16 @@ class Child:
                     # using a modifier of 50% to not always get basically the same
                     #   size as the mother
                     newitem = self.modify_value(currm, 0.5)
-                    print("Boobs", newitem)
                     constants.setv(self.child, i, newitem)
+                    if debug:
+                        print("Boobs", newitem)
                     continue
             else:
                 # for male children, breast size is irrelevant
                 if currf == self.father["Custom"]["body"]["shapeValueBody"][4]:
                     constants.setv(self.child, i, 0)
-                    print("Male: No Boobs")
+                    if debug:
+                        print("Male: No Boobs")
                     continue
             # changing the randomization of butt size (could always result in
             #   small butt for females, since males will generally have smaller butts)
@@ -213,7 +222,7 @@ class Child:
 
     # Parameter "gender": True == Female, False == Male
     # associated with male characters
-    def inherit_hair(self, gender: bool) -> None:
+    def inherit_hair(self, gender: bool, debug: bool = False) -> None:
         """ use either mother's or father's haircolor (or in combination)
             to determine the child's hair color. Will also choose random
             hair options from the vanilla selection """
@@ -266,7 +275,8 @@ class Child:
             back_hair_options = [2, 9, 22, 23, 29, 33, 53, 202, 203, 204, 205, 206, 208]
         # Set random Back Hair
         self.child["Custom"]["hair"]["parts"][0]["id"] = random.choice(back_hair_options)
-        print("Back Hair ID: " , self.child["Custom"]["hair"]["parts"][0]["id"])
+        if debug:
+            print("Back Hair ID: " , self.child["Custom"]["hair"]["parts"][0]["id"])
 
         # Vanilla Hairstyles for Front Hair
         if gender:
@@ -279,7 +289,8 @@ class Child:
                                   54, 55, 58, 59, 63, 66, 67, 68] + list(range(201, 208))
         # Set random Front Hair
         self.child["Custom"]["hair"]["parts"][1]["id"] = random.choice(front_hair_options)
-        print("Front Hair ID: ", self.child["Custom"]["hair"]["parts"][1]["id"])
+        if debug:
+            print("Front Hair ID: ", self.child["Custom"]["hair"]["parts"][1]["id"])
 
         # NOTE Side Hair does not apply to male characters
         if gender:
@@ -287,7 +298,8 @@ class Child:
             side_hair_options = [0, 1, 2, 3, 5, 6, 7]
             # Set random Side Hair
             self.child["Custom"]["hair"]["parts"][2]["id"] = random.choice(side_hair_options)
-            print("Side Hair ID: ", self.child["Custom"]["hair"]["parts"][2]["id"])
+            if debug:
+                print("Side Hair ID: ", self.child["Custom"]["hair"]["parts"][2]["id"])
 
             # Vanilla Extensions (eg. Ahoge)
             # We give a 50/50 chance of extensions or else almost every character will get one
@@ -297,10 +309,12 @@ class Child:
                 extensions_options = [0, 1, 2, 3, 4, 5, 6, 7, 8, 200]
                 # Set random Extension
                 self.child["Custom"]["hair"]["parts"][3]["id"] = random.choice(extensions_options)
-                print("Extensions ID: ", self.child["Custom"]["hair"]["parts"][3]["id"])
+                if debug:
+                    print("Extensions ID: ", self.child["Custom"]["hair"]["parts"][3]["id"])
             else:
                 self.child["Custom"]["hair"]["parts"][3]["id"] = 0
-                print("No Extensions")
+                if debug:
+                    print("No Extensions")
 
         # Vanilla Eyebrows
         # NOTE I have currently decided to inherit the eyebrows directly from the parents.
@@ -312,7 +326,8 @@ class Child:
 
         # Set random Eyebrows
         self.child["Custom"]["face"]["eyebrowId"] = random.choice(eyebrow_options)
-        print("Eyebrows ID: ", self.child["Custom"]["face"]["eyebrowId"])
+        if debug:
+            print("Eyebrows ID: ", self.child["Custom"]["face"]["eyebrowId"])
 
         # Getting hair colors of parents
         color_m = self.mother["Custom"]["hair"]["parts"][0]["baseColor"]
@@ -361,7 +376,7 @@ class Child:
 
 
     # Parameter "gender": True == Female, False == Male
-    def inherit_eyes(self, gender: bool) -> None:
+    def inherit_eyes(self, gender: bool, debug: bool = False) -> None:
         """ inherit eyes in a (somewhat) believable way """
 
         # Sclera will be inherited from either one of the parents
@@ -370,10 +385,11 @@ class Child:
                           self.mother["Custom"]["face"]["whiteId"])
         # Inherit Sclera from parents
         self.child["Custom"]["face"]["whiteId"] = random.choice(sclera_options)
-        if self.child["Custom"]["face"]["whiteId"] == self.mother["Custom"]["face"]["whiteId"]:
-            print("Sclera Type: Mother")
-        else:
-            print("Sclera Type: Father")
+        if debug:
+            if self.child["Custom"]["face"]["whiteId"] == self.mother["Custom"]["face"]["whiteId"]:
+                print("Sclera Type: Mother")
+            else:
+                print("Sclera Type: Father")
 
         # Vanilla Pupil options
         pupil_options = list(range(0, 77)) + list(range(200, 217))
@@ -384,8 +400,9 @@ class Child:
         # Will maybe add an option for 2 different ones later
         self.child["Custom"]["face"]["pupil"][1]["id"] = (self.child["Custom"]["face"]
                                                           ["pupil"][0]["id"])
-        print("Pupils Eye 1 ID: ", self.child["Custom"]["face"]["pupil"][0]["id"])
-        print("Pupils Eye 2 ID: ", self.child["Custom"]["face"]["pupil"][1]["id"])
+        if debug:
+            print("Pupils Eye 1 ID: ", self.child["Custom"]["face"]["pupil"][0]["id"])
+            print("Pupils Eye 2 ID: ", self.child["Custom"]["face"]["pupil"][1]["id"])
 
         # Pupil Color
         # Parents' eyecolors
@@ -407,25 +424,26 @@ class Child:
         self.child["Custom"]["face"]["pupil"][1]["subColor"] = (self.child["Custom"]["face"]
                                                                 ["pupil"][0]["subColor"])
 
-        if (self.child["Custom"]["face"]["pupil"][0]["baseColor"] ==
-            self.father["Custom"]["face"]["pupil"][0]["baseColor"]):
+        if debug:
+            if (self.child["Custom"]["face"]["pupil"][0]["baseColor"] ==
+                self.father["Custom"]["face"]["pupil"][0]["baseColor"]):
 
-            print("Eye Base Color Father")
+                print("Eye Base Color Father")
 
-        elif (self.child["Custom"]["face"]["pupil"][0]["baseColor"] ==
-              self.mother["Custom"]["face"]["pupil"][0]["baseColor"]):
+            elif (self.child["Custom"]["face"]["pupil"][0]["baseColor"] ==
+                self.mother["Custom"]["face"]["pupil"][0]["baseColor"]):
 
-            print("Eye Base Color Mother")
+                print("Eye Base Color Mother")
 
-        if (self.child["Custom"]["face"]["pupil"][0]["subColor"] ==
-            self.father["Custom"]["face"]["pupil"][0]["subColor"]):
+            if (self.child["Custom"]["face"]["pupil"][0]["subColor"] ==
+                self.father["Custom"]["face"]["pupil"][0]["subColor"]):
 
-            print("Eye Sub Color Father")
+                print("Eye Sub Color Father")
 
-        elif (self.child["Custom"]["face"]["pupil"][0]["subColor"] ==
-              self.mother["Custom"]["face"]["pupil"][0]["subColor"]):
+            elif (self.child["Custom"]["face"]["pupil"][0]["subColor"] ==
+                self.mother["Custom"]["face"]["pupil"][0]["subColor"]):
 
-            print("Eye Sub Color Mother")
+                print("Eye Sub Color Mother")
 
         # Eye Gradient
         # Selection of Vanilla eye gradients
@@ -438,7 +456,8 @@ class Child:
         self.child["Custom"]["face"]["pupil"][1]["gradMaskId"] = (self.child["Custom"]["face"]
                                                                   ["pupil"][0]["gradMaskId"])
 
-        print("Eye Gradient: ", self.child["Custom"]["face"]["pupil"][0]["gradMaskId"])
+        if debug:
+            print("Eye Gradient: ", self.child["Custom"]["face"]["pupil"][0]["gradMaskId"])
 
         # Set gradient strength, vertical position and size to default
         #   values to not create weird ass looking eyes
@@ -459,10 +478,12 @@ class Child:
 
         if self.child["Custom"]["face"]["hlUpId"] == self.mother["Custom"]["face"]["hlUpId"]:
             self.child["Custom"]["face"]["hlDownId"] = self.mother["Custom"]["face"]["hlDownId"]
-            print("Eye Highlights: Mother")
+            if debug:
+                print("Eye Highlights: Mother")
         else:
             self.child["Custom"]["face"]["hlDownId"] = self.father["Custom"]["face"]["hlDownId"]
-            print("Eye Highlights: Father")
+            if debug:
+                print("Eye Highlights: Father")
 
         # Upper and lower eyeliner will be taken from the respective parent of the same gender.
         # This is done to retain a certain degree of likeness to the parents, instead of
@@ -484,12 +505,14 @@ class Child:
 
             self.child["Custom"]["face"]["eyelineColor"] = (self.mother["Custom"]["face"]
                                                             ["eyelineColor"])
-            print("Eyeliner Color: Mother")
+            if debug:
+                print("Eyeliner Color: Mother")
 
         else:
             self.child["Custom"]["face"]["eyelineColor"] = (self.father["Custom"]["face"]
                                                             ["eyelineColor"])
-            print("Eyeliner Color: Father")
+            if debug:
+                print("Eyeliner Color: Father")
 
         # Set Eyes and Eyebrows to not show through hair
         self.child["Custom"]["face"]["foregroundEyes"] = 1
@@ -500,9 +523,9 @@ class Child:
         """ create a new character with specified gender """
 
         if gender:
-            print("Creating female character...\n")
+            print("Creating female character...")
         else:
-            print("Creating male character...\n")
+            print("Creating male character...")
             self.child.product_no = 100
             self.child.header = "【KoiKatuChara】".encode("utf-8")
             self.child.version = "0.0.0".encode("ascii")
@@ -516,10 +539,10 @@ class Child:
             self.child.serialized_lstinfo_order = self.father.serialized_lstinfo_order
             self.child.original_lstinfo_order = self.father.original_lstinfo_order
 
-        self.inherit_face()
-        self.inherit_hair(gender)
-        self.inherit_body(gender)
-        self.inherit_eyes(gender)
+        self.inherit_face(debug=self.debug)
+        self.inherit_hair(gender, debug=self.debug)
+        self.inherit_body(gender, debug=self.debug)
+        self.inherit_eyes(gender, debug=self.debug)
         self.save()
         print("\nDone!")
 
